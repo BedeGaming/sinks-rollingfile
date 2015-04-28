@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileV2", "Serilog.Sinks.RollingFileV2\Serilog.Sinks.RollingFileV2.csproj", "{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0F231B4C-68BD-4437-A366-0FD8B0D34A98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DF5AAE49-6312-4177-875D-250EEAFDC39D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileV2.Tests", "..\test\Serilog.Sinks.RollingFileV2.Tests\Serilog.Sinks.RollingFileV2.Tests.csproj", "{35BA7CB4-7E30-4E21-B176-B767295E5685}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF} = {0F231B4C-68BD-4437-A366-0FD8B0D34A98}
+		{35BA7CB4-7E30-4E21-B176-B767295E5685} = {DF5AAE49-6312-4177-875D-250EEAFDC39D}
+	EndGlobalSection
+EndGlobal

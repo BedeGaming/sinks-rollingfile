@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{9F725242-157F-444F-8029-8BAE22D3F78F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		assets\CommonAssemblyInfo.cs = assets\CommonAssemblyInfo.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3E6972F1-7310-4BBF-A220-6B177FF4E65C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7647A4BD-398B-4497-B740-D0E128381C37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileV2", "src\Serilog.Sinks.RollingFileV2\Serilog.Sinks.RollingFileV2.csproj", "{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileV2.Tests", "test\Serilog.Sinks.RollingFileV2.Tests\Serilog.Sinks.RollingFileV2.Tests.csproj", "{35BA7CB4-7E30-4E21-B176-B767295E5685}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF} = {3E6972F1-7310-4BBF-A220-6B177FF4E65C}
+		{35BA7CB4-7E30-4E21-B176-B767295E5685} = {7647A4BD-398B-4497-B740-D0E128381C37}
+	EndGlobalSection
+EndGlobal
