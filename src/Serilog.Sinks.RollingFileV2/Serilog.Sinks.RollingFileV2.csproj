@@ -59,7 +59,7 @@
     <Compile Include="Sinks\SizeRollingFileSink\FileNameComponents.cs" />
     <Compile Include="Sinks\SizeRollingFileSink\FileNameParser.cs" />
     <Compile Include="Sinks\SizeRollingFileSink\SizeLimitedFileSink.cs" />
-    <Compile Include="Sinks\SizeRollingFileSink\SizeLimitedLogFile.cs" />
+    <Compile Include="Sinks\SizeRollingFileSink\SizeLimitedLogFileDescription.cs" />
     <Compile Include="Sinks\SizeRollingFileSink\SizeRollingFileSink.cs" />
   </ItemGroup>
   <ItemGroup>

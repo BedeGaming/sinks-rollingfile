@@ -15,7 +15,7 @@ namespace Serilog.Sinks.RollingFileV2.Tests
         {
             var formatter = new RawFormatter();
             var components = new FileNameComponents("applog", 0, "txt");
-            var logFile = new SizeLimitedLogFile(components, 1);
+            var logFile = new SizeLimitedLogFileDescription(components, 1);
             using (var str = new MemoryStream())
             using (var wr = new StreamWriter(str, Encoding.UTF8))
             using (var sink = new SizeLimitedFileSink(formatter, logFile, wr))

@@ -13,31 +13,31 @@ namespace Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink
             typeof (SizeLimitedFileSink).Name;
 
         private readonly ITextFormatter _formatter;
-        private readonly SizeLimitedLogFile _sizeLimitedLogFile;
+        private readonly SizeLimitedLogFileDescription _sizeLimitedLogFileDescription;
         private readonly StreamWriter _output;
         private readonly object _syncRoot = new object();
         private bool _disposed = false;
         private bool _sizeLimitReached = false;
 
-        public SizeLimitedFileSink(ITextFormatter formatter, string folderPath, SizeLimitedLogFile sizeLimitedLogFile, Encoding encoding = null)
+        public SizeLimitedFileSink(ITextFormatter formatter, string folderPath, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, Encoding encoding = null)
         {
             _formatter = formatter;
-            _sizeLimitedLogFile = sizeLimitedLogFile;
-            _output = OpenFileForWriting(folderPath, sizeLimitedLogFile, encoding ?? Encoding.UTF8);
+            _sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
+            _output = OpenFileForWriting(folderPath, sizeLimitedLogFileDescription, encoding ?? Encoding.UTF8);
         }
 
-        internal SizeLimitedFileSink(ITextFormatter formatter, SizeLimitedLogFile sizeLimitedLogFile, StreamWriter writer)
+        internal SizeLimitedFileSink(ITextFormatter formatter, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, StreamWriter writer)
         {
             _formatter = formatter;
-            _sizeLimitedLogFile = sizeLimitedLogFile;
+            _sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
             _output = writer;
         }
 
-        private StreamWriter OpenFileForWriting(string folderPath, SizeLimitedLogFile sizeLimitedLogFile, Encoding encoding)
+        private StreamWriter OpenFileForWriting(string folderPath, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, Encoding encoding)
         {
             EnsureDirectoryCreated(folderPath);
-            var fullPath = Path.Combine(folderPath, sizeLimitedLogFile.FullName);
-            var stream = File.Open(fullPath, FileMode.Append, FileAccess.ReadWrite, FileShare.Read);
+            var fullPath = Path.Combine(folderPath, sizeLimitedLogFileDescription.FullName);
+            var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
             return new StreamWriter(stream, encoding ?? Encoding.UTF8);
         }
 
@@ -65,19 +65,20 @@ namespace Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink
                 _formatter.Format(logEvent, _output);
                 _output.Flush();
 
-                if (_output.BaseStream.Length > _sizeLimitedLogFile.SizeLimitBytes)
+                if (_output.BaseStream.Length > _sizeLimitedLogFileDescription.SizeLimitBytes)
                     _sizeLimitReached = true;
             }
         }
 
         internal bool SizeLimitReached { get { return _sizeLimitReached; } }
 
-        internal SizeLimitedLogFile LogFile { get { return _sizeLimitedLogFile; } }
+        internal SizeLimitedLogFileDescription LogFileDescription { get { return _sizeLimitedLogFileDescription; } }
 
         public void Dispose()
         {
             if (!_disposed)
             {
+                _output.Flush();
                 _output.Dispose();
                 _disposed = true;
             }
