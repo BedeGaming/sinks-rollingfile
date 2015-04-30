@@ -66,7 +66,7 @@ function Invoke-Build($project, $majorMinor, $patch, $customLogger, $notouch)
 
     Install-NuGetPackages $solution
     
-    Invoke-MSBuild $solution4 $customLogger
+    #Invoke-MSBuild $solution4 $customLogger
     Invoke-MSBuild $solution $customLogger
 
     Invoke-NuGetPack $package
