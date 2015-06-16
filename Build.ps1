@@ -1,8 +1,9 @@
 param(
-    [String] $majorMinor = "0.0",        # 2.0
-    [String] $patch = "0",               # $env:APPVEYOR_BUILD_VERSION
-    [String] $customLogger = "",         # C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
-    [String] $nugetExecutable = "nuget", # teamcity
+    [String] $majorMinor = "0.0",           # 2.0
+    [String] $patch = "0",                  # $env:APPVEYOR_BUILD_VERSION
+    [String] $customLogger = "",            # C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
+    [String] $nugetExecutable = "nuget",    # teamcity
+    [String] $msbuildExecutable = "msbuild" # teamcity
     [Switch] $notouch
 )
 
@@ -24,11 +25,11 @@ function Invoke-MSBuild($solution, $customLogger)
 {
     if ($customLogger)
     {
-        msbuild "$solution" /verbosity:minimal /p:Configuration=Release /logger:"$customLogger"
+        &($msbuildExecutable) "$solution" /verbosity:minimal /p:Configuration=Release /logger:"$customLogger"
     }
     else
     {
-        msbuild "$solution" /verbosity:minimal /p:Configuration=Release
+        &($msbuildExecutable) "$solution" /verbosity:minimal /p:Configuration=Release
     }
 }
 
