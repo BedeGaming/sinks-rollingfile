@@ -1,7 +1,8 @@
 param(
-    [String] $majorMinor = "0.0",  # 2.0
-    [String] $patch = "0",         # $env:APPVEYOR_BUILD_VERSION
-    [String] $customLogger = "",   # C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
+    [String] $majorMinor = "0.0",        # 2.0
+    [String] $patch = "0",               # $env:APPVEYOR_BUILD_VERSION
+    [String] $customLogger = "",         # C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
+    [String] $nugetExecutable = "nuget", # teamcity
     [Switch] $notouch
 )
 
@@ -16,7 +17,7 @@ function Set-AssemblyVersions($informational, $assembly)
 
 function Install-NuGetPackages($solution)
 {
-    nuget restore "$solution"
+    &($nugetExecutable) restore "$solution"
 }
 
 function Invoke-MSBuild($solution, $customLogger)
@@ -33,12 +34,12 @@ function Invoke-MSBuild($solution, $customLogger)
 
 function Invoke-NuGetPackProj($csproj)
 {
-    nuget pack -Prop Configuration=Release -Symbols $csproj
+    &($nugetExecutable) pack -Prop Configuration=Release -Symbols $csproj
 }
 
 function Invoke-NuGetPackSpec($nuspec, $version)
 {
-    nuget pack $nuspec -Version $version -OutputDirectory .\ -Prop Configuration=Release -Symbols
+    &($nugetExecutable) pack $nuspec -Version $version -OutputDirectory .\ -Prop Configuration=Release -Symbols
 }
 
 function Invoke-NuGetPack($version)
