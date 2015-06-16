@@ -40,7 +40,7 @@ function Invoke-NuGetPackProj($csproj)
 
 function Invoke-NuGetPackSpec($nuspec, $version)
 {
-    &($nugetExecutable) pack $nuspec -Version $version -OutputDirectory .\ -Prop Configuration=Release -Symbols
+    &($nugetExecutable) pack $nuspec -Version $version -OutputDirectory .\build\package\out -Prop Configuration=Release -Symbols
 }
 
 function Invoke-NuGetPack($version)
