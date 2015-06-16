@@ -38,14 +38,14 @@ function Invoke-NuGetPackProj($csproj)
 
 function Invoke-NuGetPackSpec($nuspec, $version)
 {
-    nuget pack $nuspec -Version $version -OutputDirectory ..\..\
+    nuget pack $nuspec -Version $version -OutputDirectory .\ -Prop Configuration=Release -Symbols
 }
 
 function Invoke-NuGetPack($version)
 {
     ls src/**/*.csproj |
         Where-Object { -not ($_.Name -like "*net40*") } |
-        ForEach-Object { Invoke-NuGetPackProj $_ }
+        ForEach-Object { Invoke-NuGetPackSpec $_ $version }
 }
 
 function Invoke-Build($project, $majorMinor, $patch, $customLogger, $notouch)
