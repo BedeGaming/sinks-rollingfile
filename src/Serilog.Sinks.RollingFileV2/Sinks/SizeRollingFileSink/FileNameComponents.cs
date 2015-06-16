@@ -1,4 +1,4 @@
-﻿namespace Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink
+﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
     internal class FileNameComponents
     {

@@ -2,7 +2,7 @@
 using System.Text;
 using NUnit.Framework;
 using Serilog.Formatting.Raw;
-using Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink;
+using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
 using Serilog.Sinks.RollingFileV2.Tests.Support;
 
 namespace Serilog.Sinks.RollingFileV2.Tests

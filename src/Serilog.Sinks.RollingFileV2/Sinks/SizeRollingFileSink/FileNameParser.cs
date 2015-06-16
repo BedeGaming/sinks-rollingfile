@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
     internal static class FileNameParser
     {

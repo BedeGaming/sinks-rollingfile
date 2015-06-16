@@ -1,9 +1,9 @@
 ﻿using System;
 using Serilog.Core;
 using Serilog.Formatting.Display;
-using Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink;
+using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
 
-namespace Serilog.Sinks.RollingFileV2
+namespace Serilog.Sinks.RollingFileAlternate
 {
     static class RollingFileSinkFactory
     {

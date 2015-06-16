@@ -7,7 +7,7 @@ using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 
-namespace Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
     /// <summary>
     /// Write log events to a series of files. Each file will be suffixed with a

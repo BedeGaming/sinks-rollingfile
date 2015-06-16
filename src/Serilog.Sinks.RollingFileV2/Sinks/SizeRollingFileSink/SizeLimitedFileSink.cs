@@ -5,7 +5,7 @@ using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 
-namespace Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
     internal class SizeLimitedFileSink : ILogEventSink, IDisposable
     {

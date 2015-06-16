@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Serilog.Sinks.RollingFileV2.Sinks.SizeRollingFileSink;
+using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
 
 namespace Serilog.Sinks.RollingFileV2.Tests
 {

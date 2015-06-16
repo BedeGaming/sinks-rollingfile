@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3E6972F1-731
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7647A4BD-398B-4497-B740-D0E128381C37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileV2", "src\Serilog.Sinks.RollingFileV2\Serilog.Sinks.RollingFileV2.csproj", "{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileAlternate", "src\Serilog.Sinks.RollingFileV2\Serilog.Sinks.RollingFileAlternate.csproj", "{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileV2.Tests", "test\Serilog.Sinks.RollingFileV2.Tests\Serilog.Sinks.RollingFileV2.Tests.csproj", "{35BA7CB4-7E30-4E21-B176-B767295E5685}"
 EndProject
