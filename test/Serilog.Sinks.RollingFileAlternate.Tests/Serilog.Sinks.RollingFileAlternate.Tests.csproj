@@ -7,8 +7,8 @@
     <ProjectGuid>{35BA7CB4-7E30-4E21-B176-B767295E5685}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Serilog.Sinks.RollingFileV2.Tests</RootNamespace>
-    <AssemblyName>Serilog.Sinks.RollingFileV2.Tests</AssemblyName>
+    <RootNamespace>Serilog.Sinks.RollingFileAlternate.Tests</RootNamespace>
+    <AssemblyName>Serilog.Sinks.RollingFileAlternate.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -63,12 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Serilog.Sinks.RollingFileV2\Serilog.Sinks.RollingFileAlternate.csproj">
-      <Project>{d6dc593e-0ce9-423b-9fa8-33f2df77a2ef}</Project>
-      <Name>Serilog.Sinks.RollingFileAlternate</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
