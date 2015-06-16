@@ -1,9 +1,9 @@
 param(
-    [String] $majorMinor = "0.0",           # 2.0
-    [String] $patch = "0",                  # $env:APPVEYOR_BUILD_VERSION
-    [String] $customLogger = "",            # C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
-    [String] $nugetExecutable = "nuget",    # teamcity
-    [String] $msbuildExecutable = "msbuild" # teamcity
+    [String] $majorMinor = "0.0",            # 2.0
+    [String] $patch = "0",                   # $env:APPVEYOR_BUILD_VERSION
+    [String] $customLogger = "",             # C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll
+    [String] $nugetExecutable = "nuget",     # teamcity
+    [String] $msbuildExecutable = "msbuild", # teamcity
     [Switch] $notouch
 )
 
