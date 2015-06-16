@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
 
-namespace Serilog.Sinks.RollingFileV2.Tests
+namespace Serilog.Sinks.RollingFileAlternate.Tests
 {
     [TestFixture]
     public class TemplateParserTests

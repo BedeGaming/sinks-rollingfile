@@ -3,9 +3,9 @@ using System.Text;
 using NUnit.Framework;
 using Serilog.Formatting.Raw;
 using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
-using Serilog.Sinks.RollingFileV2.Tests.Support;
+using Serilog.Sinks.RollingFileAlternate.Tests.Support;
 
-namespace Serilog.Sinks.RollingFileV2.Tests
+namespace Serilog.Sinks.RollingFileAlternate.Tests
 {
     [TestFixture]
     public class SizeLimitReachedTests

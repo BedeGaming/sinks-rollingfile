@@ -5,7 +5,7 @@ using System.Threading;
 using Serilog.Events;
 using Serilog.Parsing;
 
-namespace Serilog.Sinks.RollingFileV2.Tests.Support
+namespace Serilog.Sinks.RollingFileAlternate.Tests.Support
 {
     static class Some
     {

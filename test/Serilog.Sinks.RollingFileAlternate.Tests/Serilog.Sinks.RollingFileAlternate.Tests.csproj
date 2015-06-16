@@ -64,6 +64,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Serilog.Sinks.RollingFileAlternate\Serilog.Sinks.RollingFileAlternate.csproj">
+      <Project>{d6dc593e-0ce9-423b-9fa8-33f2df77a2ef}</Project>
+      <Name>Serilog.Sinks.RollingFileAlternate</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
