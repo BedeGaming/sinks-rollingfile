@@ -12,32 +12,33 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private static readonly string ThisObjectName =
             typeof (SizeLimitedFileSink).Name;
 
-        private readonly ITextFormatter _formatter;
-        private readonly SizeLimitedLogFileDescription _sizeLimitedLogFileDescription;
-        private readonly StreamWriter _output;
-        private readonly object _syncRoot = new object();
-        private bool _disposed = false;
-        private bool _sizeLimitReached = false;
+        private readonly ITextFormatter formatter;
+        private readonly SizeLimitedLogFileDescription sizeLimitedLogFileDescription;
+        private readonly StreamWriter output;
+        private readonly object syncRoot = new object();
+        private bool disposed = false;
+        private bool sizeLimitReached = false;
 
         public SizeLimitedFileSink(ITextFormatter formatter, string folderPath, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, Encoding encoding = null)
         {
-            _formatter = formatter;
-            _sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
-            _output = OpenFileForWriting(folderPath, sizeLimitedLogFileDescription, encoding ?? Encoding.UTF8);
+            this.formatter = formatter;
+            this.sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
+            this.output = OpenFileForWriting(folderPath, sizeLimitedLogFileDescription, encoding ?? Encoding.UTF8);
         }
 
         internal SizeLimitedFileSink(ITextFormatter formatter, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, StreamWriter writer)
         {
-            _formatter = formatter;
-            _sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
-            _output = writer;
+            this.formatter = formatter;
+            this.sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
+            this.output = writer;
         }
 
-        private StreamWriter OpenFileForWriting(string folderPath, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, Encoding encoding)
+        private StreamWriter OpenFileForWriting(string folderPath, SizeLimitedLogFileDescription logFileDescription, Encoding encoding)
         {
             EnsureDirectoryCreated(folderPath);
-            var fullPath = Path.Combine(folderPath, sizeLimitedLogFileDescription.FullName);
+            var fullPath = Path.Combine(folderPath, logFileDescription.FullName);
             var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
+
             return new StreamWriter(stream, encoding ?? Encoding.UTF8);
         }
 
@@ -53,34 +54,34 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         {
             if (logEvent == null) throw new ArgumentNullException("logEvent");
 
-            lock (_syncRoot)
+            lock (this.syncRoot)
             {
-                if (_disposed)
+                if (this.disposed)
                 {
                     throw new ObjectDisposedException(ThisObjectName, "Cannot write to disposed file");
                 }
 
-                if (_output == null) return;
+                if (this.output == null) return;
 
-                _formatter.Format(logEvent, _output);
-                _output.Flush();
+                this.formatter.Format(logEvent, this.output);
+                this.output.Flush();
 
-                if (_output.BaseStream.Length > _sizeLimitedLogFileDescription.SizeLimitBytes)
-                    _sizeLimitReached = true;
+                if (this.output.BaseStream.Length > this.sizeLimitedLogFileDescription.SizeLimitBytes)
+                    this.sizeLimitReached = true;
             }
         }
 
-        internal bool SizeLimitReached { get { return _sizeLimitReached; } }
+        internal bool SizeLimitReached { get { return this.sizeLimitReached; } }
 
-        internal SizeLimitedLogFileDescription LogFileDescription { get { return _sizeLimitedLogFileDescription; } }
+        internal SizeLimitedLogFileDescription LogFileDescription { get { return this.sizeLimitedLogFileDescription; } }
 
         public void Dispose()
         {
-            if (!_disposed)
+            if (!this.disposed)
             {
-                _output.Flush();
-                _output.Dispose();
-                _disposed = true;
+                this.output.Flush();
+                this.output.Dispose();
+                this.disposed = true;
             }
         }
     }
