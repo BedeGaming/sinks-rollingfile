@@ -9,8 +9,8 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         [Test]
         public void ParsesFullPathNoExtensionOrSequence()
         {
-            const string fullPath = @"C:\logs\applog";
-            var result = FileNameParser.ParseLogFileName(fullPath);
+            const string FullPath = @"C:\logs\applog";
+            var result = FileNameParser.ParseLogFileName(FullPath);
             Assert.That(result.Name, Is.EqualTo("applog"));
             Assert.That(result.Sequence, Is.EqualTo(0u));
             Assert.That(result.Extension, Is.EqualTo(string.Empty));
@@ -19,8 +19,8 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         [Test]
         public void ParsesPartialPathNoExtensionOrSequence()
         {
-            const string partialPath = @"logs\applog";
-            var result = FileNameParser.ParseLogFileName(partialPath);
+            const string PartialPath = @"logs\applog";
+            var result = FileNameParser.ParseLogFileName(PartialPath);
             Assert.That(result.Name, Is.EqualTo("applog"));
             Assert.That(result.Sequence, Is.EqualTo(0u));
             Assert.That(result.Extension, Is.EqualTo(string.Empty));
@@ -29,8 +29,8 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         [Test]
         public void ParsesFullPathWithExtensionNoSequence()
         {
-            const string fullPath = @"C:\logs\applog.txt";
-            var result = FileNameParser.ParseLogFileName(fullPath);
+            const string FullPath = @"C:\logs\applog.txt";
+            var result = FileNameParser.ParseLogFileName(FullPath);
             Assert.That(result.Name, Is.EqualTo("applog"));
             Assert.That(result.Sequence, Is.EqualTo(0u));
             Assert.That(result.Extension, Is.EqualTo("txt"));
@@ -39,8 +39,8 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         [Test]
         public void ParsesPartialPathWithExtensionNoSequence()
         {
-            const string partialPath = @"logs\applog.txt";
-            var result = FileNameParser.ParseLogFileName(partialPath);
+            const string PartialPath = @"logs\applog.txt";
+            var result = FileNameParser.ParseLogFileName(PartialPath);
             Assert.That(result.Name, Is.EqualTo("applog"));
             Assert.That(result.Sequence, Is.EqualTo(0u));
             Assert.That(result.Extension, Is.EqualTo("txt"));
@@ -49,8 +49,8 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         [Test]
         public void ParsesFullPathWithExtensionAndSequence()
         {
-            const string fullPath = @"C:\logs\applog00000.txt";
-            var result = FileNameParser.ParseLogFileName(fullPath);
+            const string FullPath = @"C:\logs\applog00000.txt";
+            var result = FileNameParser.ParseLogFileName(FullPath);
             Assert.That(result.Name, Is.EqualTo("applog"));
             Assert.That(result.Sequence, Is.EqualTo(0u));
             Assert.That(result.Extension, Is.EqualTo("txt"));
@@ -59,9 +59,19 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         [Test]
         public void ParsesPartialPathWithExtensionAndSequence()
         {
-            const string partialPath = @"logs\applog00000.txt";
-            var result = FileNameParser.ParseLogFileName(partialPath);
+            const string PartialPath = @"logs\applog00000.txt";
+            var result = FileNameParser.ParseLogFileName(PartialPath);
             Assert.That(result.Name, Is.EqualTo("applog"));
+            Assert.That(result.Sequence, Is.EqualTo(0u));
+            Assert.That(result.Extension, Is.EqualTo("txt"));
+        }
+
+        [Test]
+        public void ParsesFullPathWithReplacementToken()
+        {
+            const string FullPath = @"C:\logs\applog{Date}.txt";
+            var result = FileNameParser.ParseLogFileName(FullPath);
+            Assert.That(result.Name, Is.EqualTo("applog{Date}"));
             Assert.That(result.Sequence, Is.EqualTo(0u));
             Assert.That(result.Extension, Is.EqualTo("txt"));
         }
