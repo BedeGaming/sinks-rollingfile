@@ -12,16 +12,15 @@
         }
 
         public string FullName { get { return FileNameComponents.FullName; } }
-    }
 
-    internal static class SizeLimitedLogFileExtensions
-    {
-        internal static SizeLimitedLogFileDescription Next(this SizeLimitedLogFileDescription previous)
+        internal SizeLimitedLogFileDescription Next()
         {
-            var componentsIncremented = new FileNameComponents(previous.FileNameComponents.Name,
-                previous.FileNameComponents.Sequence + 1, previous.FileNameComponents.Extension);
-            return new SizeLimitedLogFileDescription(
-                componentsIncremented, previous.SizeLimitBytes);
+            var componentsIncremented = new FileNameComponents(
+                this.FileNameComponents.Name,
+                this.FileNameComponents.Sequence + 1,
+                this.FileNameComponents.Extension);
+
+            return new SizeLimitedLogFileDescription(componentsIncremented, this.SizeLimitBytes);
         }
     }
 }

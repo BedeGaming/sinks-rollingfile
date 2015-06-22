@@ -9,15 +9,14 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
     internal class SizeLimitedFileSink : ILogEventSink, IDisposable
     {
-        private static readonly string ThisObjectName =
-            typeof (SizeLimitedFileSink).Name;
+        private static readonly string ThisObjectName = typeof(SizeLimitedFileSink).Name;
 
         private readonly ITextFormatter formatter;
         private readonly SizeLimitedLogFileDescription sizeLimitedLogFileDescription;
         private readonly StreamWriter output;
         private readonly object syncRoot = new object();
-        private bool disposed = false;
-        private bool sizeLimitReached = false;
+        private bool disposed;
+        private bool sizeLimitReached;
 
         public SizeLimitedFileSink(ITextFormatter formatter, string folderPath, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, Encoding encoding = null)
         {
@@ -61,13 +60,18 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
                     throw new ObjectDisposedException(ThisObjectName, "Cannot write to disposed file");
                 }
 
-                if (this.output == null) return;
+                if (this.output == null)
+                {
+                    return; 
+                }
 
                 this.formatter.Format(logEvent, this.output);
                 this.output.Flush();
 
                 if (this.output.BaseStream.Length > this.sizeLimitedLogFileDescription.SizeLimitBytes)
+                {
                     this.sizeLimitReached = true;
+                }
             }
         }
 
