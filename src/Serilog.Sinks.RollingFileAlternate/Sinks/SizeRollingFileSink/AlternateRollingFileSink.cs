@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using Serilog.Core;
 using Serilog.Events;
@@ -9,42 +6,42 @@ using Serilog.Formatting;
 
 namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
+    using System.IO;
+
     /// <summary>
     /// Write log events to a series of files. Each file will be suffixed with a
-    /// 5 digit sequence number. No special templating in the path specification is
+    /// Date and 5 digit sequence number. No special template in the path specification is
     /// considered.
     /// </summary>
     public sealed class AlternateRollingFileSink : ILogEventSink, IDisposable
     {
         private static readonly string ThisObjectName = (typeof (SizeLimitedFileSink).Name);
-        private readonly string filePathTemplate;
         private readonly ITextFormatter formatter;
         private readonly long fileSizeLimitBytes;
         private readonly Encoding encoding;
         private SizeLimitedFileSink currentSink;
         private readonly object syncRoot = new object();
         private bool disposed;
-        private readonly string folderPath;
+        private readonly string logDirectory;
 
         /// <summary>
         /// Construct a <see cref="AlternateRollingFileSink"/>
         /// </summary>
-        /// <param name="filePathTemplate"></param>
+        /// <param name="logDirectory"></param>
         /// <param name="formatter"></param>
         /// <param name="fileSizeLimitBytes">
         /// The size in bytes at which a new file should be created</param>
         /// <param name="encoding"></param>
         public AlternateRollingFileSink(
-            string filePathTemplate,
+            string logDirectory,
             ITextFormatter formatter,
             long fileSizeLimitBytes,
             Encoding encoding = null)
         {
-            this.filePathTemplate = filePathTemplate;
             this.formatter = formatter;
             this.fileSizeLimitBytes = fileSizeLimitBytes;
             this.encoding = encoding;
-            this.folderPath = Path.GetDirectoryName(filePathTemplate);
+            this.logDirectory = logDirectory;
             this.currentSink = GetLatestSink();
         }
 
@@ -71,71 +68,46 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
                     throw new ObjectDisposedException(ThisObjectName, "The rolling file sink has been disposed");
                 }
 
-                this.currentSink = NewFileWhenLimitReached();
+                if (this.currentSink.SizeLimitReached)
+                {
+                    this.currentSink = NextSizeLimitedFileSink();
+                }
 
-                if(this.currentSink != null)
+                if (this.currentSink != null)
+                {
                     this.currentSink.Emit(logEvent);
+                }
             }
         }
 
         private SizeLimitedFileSink GetLatestSink()
         {
-            var latestFileDescription = GetLatestFileDescription();
-            return new SizeLimitedFileSink(this.formatter, this.folderPath, latestFileDescription, this.encoding);
+            EnsureDirectoryCreated(this.logDirectory);
+
+            LogFileInfo logFileInfo = LogFileInfo.GetLatestOrNew(DateTime.UtcNow, this.logDirectory);
+
+            return new SizeLimitedFileSink(
+                this.formatter,
+                this.logDirectory,
+                new SizeLimitedLogFileDescription(logFileInfo, this.fileSizeLimitBytes),
+                this.encoding);
         }
 
-        internal SizeLimitedLogFileDescription GetLatestFileDescription()
+        private SizeLimitedFileSink NextSizeLimitedFileSink()
         {
-            IEnumerable<SizeLimitedLogFileDescription> existingFiles =
-                GetExistingFiles(this.filePathTemplate, this.fileSizeLimitBytes);
-            
+            SizeLimitedLogFileDescription next = this.currentSink.LogFileDescription.Next();
+            this.currentSink.Dispose();
 
-            return 
-                existingFiles.OrderByDescending(x => x.FileNameComponents.Sequence).FirstOrDefault() ??
-                ParseRollingLogfile(this.filePathTemplate, this.fileSizeLimitBytes);
+            return new SizeLimitedFileSink(this.formatter, this.logDirectory, next, this.encoding);
         }
 
-
-        private SizeLimitedFileSink NewFileWhenLimitReached()
+        private static void EnsureDirectoryCreated(string path)
         {
-            if(this.currentSink.SizeLimitReached)
+            if (!Directory.Exists(path))
             {
-                SizeLimitedLogFileDescription next = this.currentSink.LogFileDescription.Next();
-                this.currentSink.Dispose();
-
-                return new SizeLimitedFileSink(this.formatter, this.folderPath, next,this.encoding);
+                Directory.CreateDirectory(path);
             }
-
-            return this.currentSink;
         }
-
-        private static IEnumerable<SizeLimitedLogFileDescription> GetExistingFiles(string filePathTemplate, long fileSizeLimitBytes)
-        {
-            var directoryName = Path.GetDirectoryName(filePathTemplate);
-            if (string.IsNullOrEmpty(directoryName))
-            {
-#if ASPNETCORE50
-                directory = Directory.GetCurrentDirectory();
-#else
-                directoryName = Environment.CurrentDirectory;
-#endif
-            }
-
-            directoryName = Path.GetFullPath(directoryName);
-
-            return
-                Directory.GetFiles(directoryName)
-                .Select(logFilePath => ParseRollingLogfile(logFilePath, fileSizeLimitBytes))
-                .Where(rollingFile => rollingFile != null);
-        }
-
-        private static SizeLimitedLogFileDescription ParseRollingLogfile(string logFilePath, long fileSizeLimitBytes)
-        {
-            var fileNameComponents = FileNameParser.ParseLogFileName(logFilePath);
-
-            return new SizeLimitedLogFileDescription(fileNameComponents, fileSizeLimitBytes);
-        }
-
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or 

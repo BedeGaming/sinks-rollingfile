@@ -11,29 +11,29 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
     [TestFixture]
     public class SizeRollingFileSinkTests
     {
-        public class GetLatestFileDescription
+        public class GetLatestLogFileInfoOrNew
         {
             [Test]
-            public void SequenceIsZeroWhenNoPreviousFile()
+            public void SequenceIsOneWhenNoPreviousFile()
             {
                 using (var dir = new TestDirectory())
-                using (var sizeRollingSink = new AlternateRollingFileSink(dir.PathTemplate, new RawFormatter(), 512))
                 {
-                    var latest = sizeRollingSink.GetLatestFileDescription();
-                    Assert.That(latest.FileNameComponents.Sequence, Is.EqualTo(0));
+                    var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
+                    Assert.That(latest.Sequence, Is.EqualTo(1));
                 }
             }
 
             [Test]
             public void SequenceIsEqualToTheHighestFileWritten()
             {
+                var date = new DateTime(2015, 01, 15);
                 using (var dir = new TestDirectory())
-                using (var sizeRollingSink = new AlternateRollingFileSink(dir.PathTemplate, new RawFormatter(), 512))
                 {
-                    dir.CreateLogFile(1);
-                    dir.CreateLogFile(2);
-                    var latest = sizeRollingSink.GetLatestFileDescription();
-                    Assert.That(latest.FileNameComponents.Sequence, Is.EqualTo(2));
+                    dir.CreateLogFile(date, 1);
+                    dir.CreateLogFile(date, 2);
+                    dir.CreateLogFile(date, 3);
+                    var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
+                    Assert.That(latest.Sequence, Is.EqualTo(3));
                 }
             }
         }
@@ -42,46 +42,41 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         public void ItCreatesNewFileWhenSizeLimitReached()
         {
             using (var dir = new TestDirectory())
-            using (var sizeRollingSink = new AlternateRollingFileSink(dir.PathTemplate, new RawFormatter(), 10))
+            using (var sizeRollingSink = new AlternateRollingFileSink(dir.LogDirectory, new RawFormatter(), 10))
             {
                 var logEvent = Some.InformationEvent();
                 sizeRollingSink.Emit(logEvent);
-                Assert.That(sizeRollingSink.CurrentLogFile.FileNameComponents.Sequence, Is.EqualTo(0));
+                Assert.That(sizeRollingSink.CurrentLogFile.LogFileInfo.Sequence, Is.EqualTo(1));
                 sizeRollingSink.Emit(logEvent);
-                Assert.That(sizeRollingSink.CurrentLogFile.FileNameComponents.Sequence, Is.EqualTo(1));
+                Assert.That(sizeRollingSink.CurrentLogFile.LogFileInfo.Sequence, Is.EqualTo(2));
             }
         }
 
         private class TestDirectory : IDisposable
         {
-            private readonly long _sizeLimit;
-            private readonly string _folder;
+            private readonly string folder;
             private readonly object _lock = new object();
-            private const string LogFileName = "applog";
-            private const string Extension = "txt";
             private static readonly string SystemTemp = Path.GetTempPath() + "Serilog-SizeRollingFileTests";
-            private bool _disposed;
+            private bool disposed;
 
-            public TestDirectory(long? sizeLimit = null)
+            public TestDirectory()
             {
-                _sizeLimit = sizeLimit ?? 512L;
                 var subfolderPath = Path.Combine(SystemTemp, Guid.NewGuid().ToString("N"));
                 var di = 
                     Directory.Exists(subfolderPath)
                         ? new DirectoryInfo(subfolderPath)
                         : Directory.CreateDirectory(subfolderPath);
-                _folder = di.FullName;
+                this.folder = di.FullName;
             }
 
-            public string PathTemplate { get { return Path.Combine(_folder, LogFileName + "." + Extension); } }
+            public string LogDirectory { get { return this.folder; } }
 
-            public void CreateLogFile(uint? sequence)
+            public void CreateLogFile(DateTime date, uint sequence)
             {
                 lock (_lock)
                 {
-                    var fileDescription = new SizeLimitedLogFileDescription(
-                        new FileNameComponents(LogFileName, sequence ?? 0, Extension), _sizeLimit);
-                    File.Create(Path.Combine(_folder, fileDescription.FullName)).Dispose(); // touch
+                    string fileName = Path.Combine(this.folder, new LogFileInfo(date, sequence).FileName);
+                    File.Create(fileName).Dispose(); // touch
                 }
             }
 
@@ -89,15 +84,15 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             {
                 lock (_lock)
                 {
-                    if (_disposed) return;
+                    if (this.disposed) return;
                     try
                     {
-                        Directory.GetFiles(_folder).ToList().ForEach(File.Delete);
-                        Directory.Delete(_folder);
+                        Directory.GetFiles(this.folder).ToList().ForEach(File.Delete);
+                        Directory.Delete(this.folder);
                     }
                     finally
                     {
-                        _disposed = true;
+                        this.disposed = true;
                     }
                 }
             }
