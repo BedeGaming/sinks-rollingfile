@@ -18,24 +18,34 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private bool disposed;
         private bool sizeLimitReached;
 
-        public SizeLimitedFileSink(ITextFormatter formatter, string folderPath, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, Encoding encoding = null)
+        public SizeLimitedFileSink(
+            ITextFormatter formatter,
+            string logDirectory,
+            SizeLimitedLogFileDescription sizeLimitedLogFileDescription,
+            Encoding encoding = null)
         {
             this.formatter = formatter;
             this.sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
-            this.output = OpenFileForWriting(folderPath, sizeLimitedLogFileDescription, encoding ?? Encoding.UTF8);
+            this.output = OpenFileForWriting(logDirectory, sizeLimitedLogFileDescription, encoding ?? Encoding.UTF8);
         }
 
-        internal SizeLimitedFileSink(ITextFormatter formatter, SizeLimitedLogFileDescription sizeLimitedLogFileDescription, StreamWriter writer)
+        internal SizeLimitedFileSink(
+            ITextFormatter formatter,
+            SizeLimitedLogFileDescription sizeLimitedLogFileDescription,
+            StreamWriter writer)
         {
             this.formatter = formatter;
             this.sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
             this.output = writer;
         }
 
-        private StreamWriter OpenFileForWriting(string folderPath, SizeLimitedLogFileDescription logFileDescription, Encoding encoding)
+        private StreamWriter OpenFileForWriting(
+            string folderPath,
+            SizeLimitedLogFileDescription logFileDescription,
+            Encoding encoding)
         {
             EnsureDirectoryCreated(folderPath);
-            var fullPath = Path.Combine(folderPath, logFileDescription.FullName);
+            var fullPath = Path.Combine(folderPath, logFileDescription.FileName);
             var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
 
             return new StreamWriter(stream, encoding ?? Encoding.UTF8);
@@ -77,7 +87,13 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 
         internal bool SizeLimitReached { get { return this.sizeLimitReached; } }
 
-        internal SizeLimitedLogFileDescription LogFileDescription { get { return this.sizeLimitedLogFileDescription; } }
+        internal SizeLimitedLogFileDescription LogFileDescription
+        {
+            get
+            {
+                return this.sizeLimitedLogFileDescription;
+            }
+        }
 
         public void Dispose()
         {

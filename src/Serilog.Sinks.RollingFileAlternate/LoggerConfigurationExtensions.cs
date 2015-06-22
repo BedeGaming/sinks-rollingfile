@@ -23,7 +23,7 @@
         /// that rolls files based on their size.
         /// </summary>
         /// <param name="configuration"><see cref="LoggerSinkConfiguration"/></param>
-        /// <param name="pathFormat">The names of the files to be logged</param>
+        /// <param name="logDirectory">The names of the directory to be logged</param>
         /// <param name="minimumLevel">Minimum <see cref="LogLevel"/></param>
         /// <param name="outputTemplate">The template for substituting logged parameters</param>
         /// <param name="formatProvider">A culture specific format provider</param>
@@ -31,7 +31,7 @@
         /// <returns></returns>
         public static LoggerConfiguration RollingFileAlternate(
             this LoggerSinkConfiguration configuration,
-            string pathFormat,
+            string logDirectory,
             LogEventLevel minimumLevel = LevelAlias.Minimum,
             string outputTemplate = DefaultOutputTemplate,
             IFormatProvider formatProvider = null,
@@ -41,7 +41,7 @@
                 throw new ArgumentNullException("configuration");
 
             var templateFormatter = new MessageTemplateTextFormatter(outputTemplate, formatProvider);
-            var sink = new AlternateRollingFileSink(pathFormat, templateFormatter, fileSizeLimitBytes ?? TwoMegabytes);
+            var sink = new AlternateRollingFileSink(logDirectory, templateFormatter, fileSizeLimitBytes ?? TwoMegabytes);
             return configuration.Sink(sink, minimumLevel);
         }
     }

@@ -13,15 +13,20 @@ namespace SizeRollingExample
         {
             var logger =
                 new LoggerConfiguration().MinimumLevel.Verbose()
-                    .WriteTo.RollingFileAlternate(@"C:\logs\serilogtest\today{Date}AB.txt", fileSizeLimitBytes: 512)
+                    .WriteTo.RollingFileAlternate(@"C:\logs\serilogtest\", fileSizeLimitBytes: 4096)
                     .WriteTo.Console()
                     .CreateLogger();
-            Console.WriteLine("Hit q to exit, any other key to log a message");
+
             int messageCount = 0;
-            while (Console.ReadKey().Key != ConsoleKey.Q)
+            while (true)
             {
-                logger.Information("Message: {messageCount}", messageCount);
-                messageCount++;
+                for (int i = 0; i < 100; i++)
+                {
+                    logger.Information("Message: {messageCount}", messageCount);
+                    messageCount++;
+                }
+                Console.WriteLine("Enter to log 100 logs...");
+                Console.ReadLine();
             }
         }
     }

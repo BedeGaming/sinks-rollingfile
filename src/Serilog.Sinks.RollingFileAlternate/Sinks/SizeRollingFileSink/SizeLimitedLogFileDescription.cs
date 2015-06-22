@@ -3,24 +3,19 @@
     internal class SizeLimitedLogFileDescription
     {
         public readonly long SizeLimitBytes;
-        public readonly FileNameComponents FileNameComponents;
+        public readonly LogFileInfo LogFileInfo;
 
-        public SizeLimitedLogFileDescription(FileNameComponents fileNameComponents, long sizeLimitBytes)
+        public SizeLimitedLogFileDescription(LogFileInfo logFileInfo, long sizeLimitBytes)
         {
-            FileNameComponents = fileNameComponents;
+            LogFileInfo = logFileInfo;
             SizeLimitBytes = sizeLimitBytes;
         }
 
-        public string FullName { get { return FileNameComponents.FullName; } }
+        public string FileName { get { return LogFileInfo.FileName; } }
 
         internal SizeLimitedLogFileDescription Next()
         {
-            var componentsIncremented = new FileNameComponents(
-                this.FileNameComponents.Name,
-                this.FileNameComponents.Sequence + 1,
-                this.FileNameComponents.Extension);
-
-            return new SizeLimitedLogFileDescription(componentsIncremented, this.SizeLimitBytes);
+            return new SizeLimitedLogFileDescription(this.LogFileInfo.Next(), this.SizeLimitBytes);
         }
     }
 }
