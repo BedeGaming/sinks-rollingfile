@@ -17,7 +17,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             public void SequenceIsZeroWhenNoPreviousFile()
             {
                 using (var dir = new TestDirectory())
-                using (var sizeRollingSink = new SizeRollingFileSink(dir.PathTemplate, new RawFormatter(), 512))
+                using (var sizeRollingSink = new AlternateRollingFileSink(dir.PathTemplate, new RawFormatter(), 512))
                 {
                     var latest = sizeRollingSink.GetLatestFileDescription();
                     Assert.That(latest.FileNameComponents.Sequence, Is.EqualTo(0));
@@ -28,7 +28,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             public void SequenceIsEqualToTheHighestFileWritten()
             {
                 using (var dir = new TestDirectory())
-                using (var sizeRollingSink = new SizeRollingFileSink(dir.PathTemplate, new RawFormatter(), 512))
+                using (var sizeRollingSink = new AlternateRollingFileSink(dir.PathTemplate, new RawFormatter(), 512))
                 {
                     dir.CreateLogFile(1);
                     dir.CreateLogFile(2);
@@ -42,7 +42,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         public void ItCreatesNewFileWhenSizeLimitReached()
         {
             using (var dir = new TestDirectory())
-            using (var sizeRollingSink = new SizeRollingFileSink(dir.PathTemplate, new RawFormatter(), 10))
+            using (var sizeRollingSink = new AlternateRollingFileSink(dir.PathTemplate, new RawFormatter(), 10))
             {
                 var logEvent = Some.InformationEvent();
                 sizeRollingSink.Emit(logEvent);

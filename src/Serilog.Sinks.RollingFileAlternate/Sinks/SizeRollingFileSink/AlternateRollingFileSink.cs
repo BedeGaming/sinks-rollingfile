@@ -14,41 +14,41 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
     /// 5 digit sequence number. No special templating in the path specification is
     /// considered.
     /// </summary>
-    public sealed class SizeRollingFileSink : ILogEventSink, IDisposable
+    public sealed class AlternateRollingFileSink : ILogEventSink, IDisposable
     {
         private static readonly string ThisObjectName = (typeof (SizeLimitedFileSink).Name);
-        private readonly string _filePathTemplate;
-        private readonly ITextFormatter _formatter;
-        private readonly long _fileSizeLimitBytes;
-        private readonly Encoding _encoding;
-        private SizeLimitedFileSink _currentSink;
-        private readonly object _syncRoot = new object();
-        private bool _disposed = false;
-        private readonly string _folderPath;
+        private readonly string filePathTemplate;
+        private readonly ITextFormatter formatter;
+        private readonly long fileSizeLimitBytes;
+        private readonly Encoding encoding;
+        private SizeLimitedFileSink currentSink;
+        private readonly object syncRoot = new object();
+        private bool disposed;
+        private readonly string folderPath;
 
         /// <summary>
-        /// Construct a <see cref="SizeRollingFileSink"/>
+        /// Construct a <see cref="AlternateRollingFileSink"/>
         /// </summary>
         /// <param name="filePathTemplate"></param>
         /// <param name="formatter"></param>
         /// <param name="fileSizeLimitBytes">
         /// The size in bytes at which a new file should be created</param>
         /// <param name="encoding"></param>
-        public SizeRollingFileSink(
+        public AlternateRollingFileSink(
             string filePathTemplate,
             ITextFormatter formatter,
             long fileSizeLimitBytes,
             Encoding encoding = null)
         {
-            _filePathTemplate = filePathTemplate;
-            _formatter = formatter;
-            _fileSizeLimitBytes = fileSizeLimitBytes;
-            _encoding = encoding;
-            _folderPath = Path.GetDirectoryName(filePathTemplate);
-            _currentSink = GetLatestSink();
+            this.filePathTemplate = filePathTemplate;
+            this.formatter = formatter;
+            this.fileSizeLimitBytes = fileSizeLimitBytes;
+            this.encoding = encoding;
+            this.folderPath = Path.GetDirectoryName(filePathTemplate);
+            this.currentSink = GetLatestSink();
         }
 
-        internal SizeLimitedLogFileDescription CurrentLogFile { get { return _currentSink.LogFileDescription; } }
+        internal SizeLimitedLogFileDescription CurrentLogFile { get { return this.currentSink.LogFileDescription; } }
 
         /// <summary>
         /// Emits a log event to this sink
@@ -59,46 +59,54 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         public void Emit(LogEvent logEvent)
         {
 
-            if (logEvent == null) throw new ArgumentNullException("logEvent");
-
-            lock (_syncRoot)
+            if (logEvent == null)
             {
-                if (_disposed)
-                    throw new ObjectDisposedException(ThisObjectName, "The rolling file sink has been disposed");
-                _currentSink = NewFileWhenLimitReached();
+                throw new ArgumentNullException("logEvent");
+            }
 
-                if(_currentSink != null)
-                    _currentSink.Emit(logEvent);
+            lock (this.syncRoot)
+            {
+                if (this.disposed)
+                {
+                    throw new ObjectDisposedException(ThisObjectName, "The rolling file sink has been disposed");
+                }
+
+                this.currentSink = NewFileWhenLimitReached();
+
+                if(this.currentSink != null)
+                    this.currentSink.Emit(logEvent);
             }
         }
 
         private SizeLimitedFileSink GetLatestSink()
         {
             var latestFileDescription = GetLatestFileDescription();
-            return new SizeLimitedFileSink(_formatter, _folderPath, latestFileDescription, _encoding);
+            return new SizeLimitedFileSink(this.formatter, this.folderPath, latestFileDescription, this.encoding);
         }
 
         internal SizeLimitedLogFileDescription GetLatestFileDescription()
         {
             IEnumerable<SizeLimitedLogFileDescription> existingFiles =
-                GetExistingFiles(_filePathTemplate, _fileSizeLimitBytes);
-            var latestFileDescription =
+                GetExistingFiles(this.filePathTemplate, this.fileSizeLimitBytes);
+            
+
+            return 
                 existingFiles.OrderByDescending(x => x.FileNameComponents.Sequence).FirstOrDefault() ??
-                ParseRollingLogfile(_filePathTemplate, _fileSizeLimitBytes);
-            return latestFileDescription;
+                ParseRollingLogfile(this.filePathTemplate, this.fileSizeLimitBytes);
         }
 
 
         private SizeLimitedFileSink NewFileWhenLimitReached()
         {
-            if(_currentSink.SizeLimitReached)
+            if(this.currentSink.SizeLimitReached)
             {
-                var next = _currentSink.LogFileDescription.Next();
-                _currentSink.Dispose();
-                return new SizeLimitedFileSink(_formatter, _folderPath, next,_encoding);
+                SizeLimitedLogFileDescription next = this.currentSink.LogFileDescription.Next();
+                this.currentSink.Dispose();
+
+                return new SizeLimitedFileSink(this.formatter, this.folderPath, next,this.encoding);
             }
 
-            return _currentSink;
+            return this.currentSink;
         }
 
         private static IEnumerable<SizeLimitedLogFileDescription> GetExistingFiles(string filePathTemplate, long fileSizeLimitBytes)
@@ -114,15 +122,16 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             }
 
             directoryName = Path.GetFullPath(directoryName);
+
             return
                 Directory.GetFiles(directoryName)
-                .Select(x => ParseRollingLogfile(x, fileSizeLimitBytes))
+                .Select(logFilePath => ParseRollingLogfile(logFilePath, fileSizeLimitBytes))
                 .Where(rollingFile => rollingFile != null);
         }
 
-        private static SizeLimitedLogFileDescription ParseRollingLogfile(string path, long fileSizeLimitBytes)
+        private static SizeLimitedLogFileDescription ParseRollingLogfile(string logFilePath, long fileSizeLimitBytes)
         {
-            var fileNameComponents = FileNameParser.ParseLogFileName(path);
+            var fileNameComponents = FileNameParser.ParseLogFileName(logFilePath);
 
             return new SizeLimitedLogFileDescription(fileNameComponents, fileSizeLimitBytes);
         }
@@ -134,13 +143,13 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         /// </summary>
         public void Dispose()
         {
-            lock (_syncRoot)
+            lock (this.syncRoot)
             {
-                if (!_disposed && _currentSink != null)
+                if (!this.disposed && this.currentSink != null)
                 {
-                    _currentSink.Dispose();
-                    _currentSink = null;
-                    _disposed = true;
+                    this.currentSink.Dispose();
+                    this.currentSink = null;
+                    this.disposed = true;
                 }
             }
         }

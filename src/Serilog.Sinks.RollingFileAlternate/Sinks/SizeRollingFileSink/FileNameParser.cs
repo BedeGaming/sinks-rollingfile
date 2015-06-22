@@ -41,6 +41,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             }
 
             var extension = (Path.GetExtension(logFilePath) ?? string.Empty).TrimStart('.');
+
             return new FileNameComponents(name, sequence, extension);
         }
     }
