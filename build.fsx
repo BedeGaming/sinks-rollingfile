@@ -38,6 +38,7 @@ Target "PatchAssemblyInfo" <| fun _ ->
 
     CreateCSharpAssemblyInfoWithConfig pathToPatch attributes config
 
+Target "Clean"
 
 Target "Build" <| fun _ ->
     !! "src/**/*.csproj"
@@ -49,5 +50,7 @@ Target "Default" DoNothing
 "PatchAssemblyInfo"
     ==> "Build"
     ==> "Default"
+
+RestorePackages()
 
 RunTargetOrDefault "Default"
