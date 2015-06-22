@@ -41,7 +41,7 @@
                 throw new ArgumentNullException("configuration");
 
             var templateFormatter = new MessageTemplateTextFormatter(outputTemplate, formatProvider);
-            var sink = new SizeRollingFileSink(pathFormat, templateFormatter, fileSizeLimitBytes ?? TwoMegabytes);
+            var sink = new AlternateRollingFileSink(pathFormat, templateFormatter, fileSizeLimitBytes ?? TwoMegabytes);
             return configuration.Sink(sink, minimumLevel);
         }
     }
