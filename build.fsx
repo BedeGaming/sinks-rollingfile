@@ -1,8 +1,13 @@
 #r "build/tools/FAKE/tools/FakeLib.dll"
 
 let sd = __SOURCE_DIRECTORY__
+let projectName = "Serilog.Sinks.RollingFileAlternate"
 
 open Fake
+
+let buildDir = sd @@ "build"
+let packageOutFolder = buildDir @@ "package" @@ "out"
+let toolsPath = buildDir @@ "tools"
 
 open EnvironmentHelper
 let isRelease = getBuildParamOrDefault "IS_RELEASE" "false" |> System.Boolean.Parse
@@ -45,12 +50,49 @@ Target "Build" <| fun _ ->
     |> MSBuildRelease "" "Rebuild"
     |> Log "Building Sink"
 
+Target "BuildTests" <| fun _ ->
+    !! "test/**/*.csproj"
+    |> MSBuildRelease "build/out/tests" "Build"
+    |> Log "Building Tests"
+
+Target "InstallNunit" <| fun _ ->
+    RestorePackageId (
+        fun p ->
+            { p with
+                OutputPath = toolsPath @@ "nunit-runner"
+                ExcludeVersion = true })
+        "NUnit.Runners"
+
+Target "ExecuteTests" <| fun _ ->
+    !! "build/out/tests/*.dll"
+    |> NUnit (
+        fun p ->
+            { p with
+                ToolPath = toolsPath @@ "nunit-runner/NUnit.Runners/tools"
+                Framework = "4.5" })
+
+open NuGetHelper
+Target "PackageNuget" <| fun _ ->
+
+    let parm p =
+        { p with
+            WorkingDir = sd
+            Properties = [ "Configuration", "Release" ]
+            SymbolPackage = NugetSymbolPackage.Nuspec
+            Version = releaseNotes.NugetVersion
+            OutputPath = "build" @@ "package " @@ "out" }
+    NuGetPack parm (sd @@ "src" @@ "Serilog.Sinks.RollingFileAlternate" @@ "Serilog.Sinks.RollingFileAlternate.csproj")
+
 Target "Default" DoNothing
 
-"PatchAssemblyInfo"
-    ==> "Build"
-    ==> "Default"
+"PatchAssemblyInfo" ==> "Build"
+"InstallNunit" ==> "ExecuteTests"
+"BuildTests" ==> "ExecuteTests"
+"Build" ==> "BuildTests"
+"ExecuteTests" ==> "PackageNuget"
+"Build" ==> "PackageNuget"
 
 RestorePackages()
 
-RunTargetOrDefault "Default"
+RunTargetOrDefault "PackageNuget"
+

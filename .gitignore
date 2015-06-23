@@ -19,6 +19,7 @@ x64/
 x86/
 /build/tools/*
 /build/package/*
+/build/out/
 bld/
 [Bb]in/
 [Oo]bj/
