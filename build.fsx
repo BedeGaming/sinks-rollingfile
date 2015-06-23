@@ -1,4 +1,4 @@
-#r "build/tools/FAKE/tools/FakeLib.dll"
+#r "./build/tools/FAKE/tools/FakeLib.dll"
 
 let sd = __SOURCE_DIRECTORY__
 let projectName = "Serilog.Sinks.RollingFileAlternate"
@@ -15,14 +15,16 @@ let isRelease = getBuildParamOrDefault "IS_RELEASE" "false" |> System.Boolean.Pa
 open ReleaseNotesHelper
 open BuildServerHelper
 
+let getReleaseNotesFromFile () =
+    ReadFile "docs/RELEASE_NOTES.md"
+    |> parseReleaseNotes
+
 let releaseNotes =
-    match isLocalBuild with
-    | true  -> ReleaseNotes.New("2.0.0", "2.0.0-pre", ["local developer build"])
+    match isRelease with
+    | true -> getReleaseNotesFromFile ()
     | false ->
-        match isRelease with
-        | true ->
-            ReadFile "docs/RELEASE_NOTES.md"
-            |> parseReleaseNotes
+        match isLocalBuild with
+        | true  -> ReleaseNotes.New("2.0.0", "2.0.0-pre", ["local developer build"])
         | false ->
             ReleaseNotes.New(
                 buildVersion,
@@ -56,12 +58,12 @@ Target "BuildTests" <| fun _ ->
     |> Log "Building Tests"
 
 Target "InstallNunit" <| fun _ ->
-    RestorePackageId (
-        fun p ->
-            { p with
-                OutputPath = toolsPath @@ "nunit-runner"
-                ExcludeVersion = true })
-        "NUnit.Runners"
+        RestorePackageId (
+            fun p ->
+                { p with
+                    OutputPath = toolsPath @@ "nunit-runner"
+                    ExcludeVersion = true })
+            "NUnit.Runners"
 
 Target "ExecuteTests" <| fun _ ->
     !! "build/out/tests/*.dll"
@@ -83,16 +85,50 @@ Target "PackageNuget" <| fun _ ->
             OutputPath = "build" @@ "package " @@ "out" }
     NuGetPack parm (sd @@ "src" @@ "Serilog.Sinks.RollingFileAlternate" @@ "Serilog.Sinks.RollingFileAlternate.csproj")
 
+open System.Text.RegularExpressions
+
+Target "Publish" <| fun _ ->
+
+    if not (hasBuildParam "NugetApiKey") then
+        failwith "Nuget api key needs to be set"
+
+    let getPackage pkg =
+        let packageRegex =
+             "(?<name>([\w|\.]+?))\.(?<number>([\d|\.]+){2,4})\.nupkg"
+        let matches = Regex.Match(pkg, packageRegex)
+        matches.Groups.["number"].Value
+
+    let builtPackages =
+        let packageIncludes =
+            !! ( packageOutFolder @@ "*.nupkg" )
+            -- ( packageOutFolder @@ "*.symbols.nupkg" )
+        packageIncludes
+        |> Seq.map (getPackage >> SemVerHelper.parse)
+
+    let releaseNotes = getReleaseNotesFromFile ()
+    let haveMatchingPackage =
+        builtPackages
+        |> Seq.exists (fun x -> x = releaseNotes.SemVer)
+
+    if not haveMatchingPackage then
+        failwith <| sprintf
+            "No package found that matches the version in the release notes: [ %s] - \
+            Have you not built the release version yet?"
+            (string releaseNotes.SemVer)
+
+let nunitIsInstalled = 
+    fileExists (toolsPath @@ "nunit-runner/Nunit.Runners/tools/nunit-console.exe")
+
 Target "Default" DoNothing
 
-"PatchAssemblyInfo" ==> "Build"
-"InstallNunit" ==> "ExecuteTests"
-"BuildTests" ==> "ExecuteTests"
-"Build" ==> "BuildTests"
-"ExecuteTests" ==> "PackageNuget"
-"Build" ==> "PackageNuget"
+"PatchAssemblyInfo" ==> "Build" |> ignore
+"InstallNunit" =?> ("ExecuteTests", not nunitIsInstalled) |> ignore
+"BuildTests" ==> "ExecuteTests" |> ignore
+"Build" ==> "BuildTests" |> ignore
+"ExecuteTests" ==> "PackageNuget" |> ignore
+"Build" ==> "PackageNuget" ==> "Default" |> ignore
 
+sprintf "Building version: %s" (string releaseNotes.SemVer) |> traceImportant
 RestorePackages()
-
-RunTargetOrDefault "PackageNuget"
+RunTargetOrDefault "Default"
 
