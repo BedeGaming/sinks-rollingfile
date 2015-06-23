@@ -87,11 +87,7 @@ Target "PackageNuget" <| fun _ ->
 
 open System.Text.RegularExpressions
 
-Target "Publish" <| fun _ ->
-
-    if not (hasBuildParam "NugetApiKey") then
-        failwith "Nuget api key needs to be set"
-
+let haveReleasePackage =
     let getPackage pkg =
         let packageRegex =
              "(?<name>([\w|\.]+?))\.(?<number>([\d|\.]+){2,4})\.nupkg"
@@ -106,15 +102,15 @@ Target "Publish" <| fun _ ->
         |> Seq.map (getPackage >> SemVerHelper.parse)
 
     let releaseNotes = getReleaseNotesFromFile ()
-    let haveMatchingPackage =
-        builtPackages
-        |> Seq.exists (fun x -> x = releaseNotes.SemVer)
+    builtPackages
+    |> Seq.exists (fun x -> x = releaseNotes.SemVer)
 
-    if not haveMatchingPackage then
-        failwith <| sprintf
-            "No package found that matches the version in the release notes: [ %s] - \
-            Have you not built the release version yet?"
-            (string releaseNotes.SemVer)
+
+Target "Publish" <| fun _ ->
+
+    if not (hasBuildParam "NugetApiKey") then
+        failwith "Nuget api key needs to be set"
+
 
 let nunitIsInstalled = 
     fileExists (toolsPath @@ "nunit-runner/Nunit.Runners/tools/nunit-console.exe")
@@ -127,6 +123,7 @@ Target "Default" DoNothing
 "Build" ==> "BuildTests" |> ignore
 "ExecuteTests" ==> "PackageNuget" |> ignore
 "Build" ==> "PackageNuget" ==> "Default" |> ignore
+"PackageNuget" =?> ("Publish", haveReleasePackage) |> ignore
 
 sprintf "Building version: %s" (string releaseNotes.SemVer) |> traceImportant
 RestorePackages()
