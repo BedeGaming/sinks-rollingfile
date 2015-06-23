@@ -57,8 +57,7 @@
   <ItemGroup>
     <Compile Include="LoggerConfigurationExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sinks\SizeRollingFileSink\FileNameComponents.cs" />
-    <Compile Include="Sinks\SizeRollingFileSink\FileNameParser.cs" />
+    <Compile Include="Sinks\SizeRollingFileSink\LogFileInfo.cs" />
     <Compile Include="Sinks\SizeRollingFileSink\SizeLimitedFileSink.cs" />
     <Compile Include="Sinks\SizeRollingFileSink\SizeLimitedLogFileDescription.cs" />
     <Compile Include="Sinks\SizeRollingFileSink\AlternateRollingFileSink.cs" />

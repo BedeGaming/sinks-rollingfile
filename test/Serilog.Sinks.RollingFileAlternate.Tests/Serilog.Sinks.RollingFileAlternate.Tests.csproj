@@ -54,12 +54,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileNameComponentsTests.cs" />
+    <Compile Include="LogFileInfoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SizeLimitReachedTests.cs" />
     <Compile Include="SizeRollingFileSinkTests.cs" />
     <Compile Include="Support\Some.cs" />
-    <Compile Include="TemplateParserTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
