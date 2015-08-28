@@ -34,10 +34,8 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             var formatter = new RawFormatter();
             var components = new LogFileInfo(new DateTime(2015, 01, 15), 0);
             var logFile = new SizeLimitedLogFileDescription(components, 1);
-            var str = new MemoryStream();
-            var wr = new StreamWriter(str, Encoding.UTF8);
-            var sink = new SizeLimitedFileSink(formatter, @"c:\temp", logFile, Encoding.UTF8);
-            return sink;
+
+            return new SizeLimitedFileSink(formatter, @"c:\temp", logFile, Encoding.UTF8);
         }
     }
 }
