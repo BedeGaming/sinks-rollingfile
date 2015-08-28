@@ -46,7 +46,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         {
             EnsureDirectoryCreated(folderPath);
             var fullPath = Path.Combine(folderPath, logFileDescription.FileName);
-            var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
+            var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
 
             return new StreamWriter(stream, encoding ?? Encoding.UTF8);
         }

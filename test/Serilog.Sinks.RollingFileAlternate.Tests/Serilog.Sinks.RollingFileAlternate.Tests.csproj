@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LogFileInfoTests.cs" />
+    <Compile Include="MultipleSinksTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SizeLimitReachedTests.cs" />
     <Compile Include="SizeRollingFileSinkTests.cs" />
