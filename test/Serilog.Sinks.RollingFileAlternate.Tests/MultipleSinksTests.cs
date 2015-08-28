@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using NUnit.Framework;
 using Serilog.Formatting.Raw;
@@ -12,10 +11,10 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
     public class MultipleSinksTests
     {
         [Test]
-        public void CanLogToSameFile()
+        public void WillLogToSeparateFiles()
         {
-            var sink1 = CreateSizeLimitedFileSink();
-            var sink2 = CreateSizeLimitedFileSink();
+            var sink1 = AlternateRollingFileSinkFileSink();
+            var sink2 = AlternateRollingFileSinkFileSink();
 
             var @event = Some.InformationEvent();
             sink1.Emit(@event);
@@ -29,13 +28,11 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             }
         }
 
-        private static SizeLimitedFileSink CreateSizeLimitedFileSink()
+        private static AlternateRollingFileSink AlternateRollingFileSinkFileSink()
         {
             var formatter = new RawFormatter();
-            var components = new LogFileInfo(new DateTime(2015, 01, 15), 0);
-            var logFile = new SizeLimitedLogFileDescription(components, 1);
 
-            return new SizeLimitedFileSink(formatter, @"c:\temp", logFile, Encoding.UTF8);
+            return new AlternateRollingFileSink(@"c:\temp", formatter, 100000, Encoding.UTF8);
         }
     }
 }
