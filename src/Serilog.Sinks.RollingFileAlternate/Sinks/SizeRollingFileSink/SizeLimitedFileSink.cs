@@ -45,10 +45,23 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             Encoding encoding)
         {
             EnsureDirectoryCreated(folderPath);
-            var fullPath = Path.Combine(folderPath, logFileDescription.FileName);
-            var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
+            try
+            {
+                var fullPath = Path.Combine(folderPath, logFileDescription.FileName);
+                var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
 
-            return new StreamWriter(stream, encoding ?? Encoding.UTF8);
+                return new StreamWriter(stream, encoding ?? Encoding.UTF8);
+            }
+            catch (IOException ex)
+            {
+                // Unfortuantely the exception doesn't have a code to check so need to check the message instead
+                if (!ex.Message.StartsWith("The process cannot access the file"))
+                {
+                    throw;
+                }
+            }
+
+            return OpenFileForWriting(folderPath, logFileDescription.Next(), encoding);
         }
 
         private static void EnsureDirectoryCreated(string path)
