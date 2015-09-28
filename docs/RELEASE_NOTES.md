@@ -1,3 +1,6 @@
+### 1.3.0 (Released 2015/09/28)
+* Hourly rolling log files
+
 ### 1.2.0 (Released 2015/08/28)
 * if sink can't get write access to file it now chooses next sequence number
 
