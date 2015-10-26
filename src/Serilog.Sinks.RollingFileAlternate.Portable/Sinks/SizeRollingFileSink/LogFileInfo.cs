@@ -1,9 +1,8 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
-{
-    using System;
-    using System.IO;
-    using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
+{
     internal class LogFileInfo
     {
         private const string NumberFormat = "00000";
@@ -12,6 +11,7 @@
         internal uint Sequence { get; private set; }
         internal string FileName { get; private set; }
         internal DateTime Date { get; private set; }
+
 
         public LogFileInfo(DateTime date, uint sequence)
         {
@@ -25,19 +25,19 @@
             DateTime now = DateTime.UtcNow;
             if (this.Date.Date != now.Date)
             {
-                return new LogFileInfo(now, 1);
+                return new LogFileInfo( now, 1);
             }
 
             return new LogFileInfo(now, this.Sequence + 1);
         }
 
-        internal static LogFileInfo GetLatestOrNew(DateTime date, string logDirectory)
+        internal static LogFileInfo GetLatestOrNew(DateTime date, string logDirectory, IFileSystem fileSystem)
         {
             string pattern = date.ToString(DateFormat) + @"-(\d{5}).log";
 
             var logFileInfo = new LogFileInfo(date, 1);
 
-            foreach (var filePath in Directory.GetFiles(logDirectory))
+            foreach (var filePath in fileSystem.GetFiles(logDirectory))
             {
                 Match match = Regex.Match(filePath, pattern);
                 if (match.Success)

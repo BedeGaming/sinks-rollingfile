@@ -4,11 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}</ProjectGuid>
+    <ProjectGuid>{D0129A92-AD43-4CE7-9090-4A5DF073995B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Serilog.Sinks.RollingFileAlternate</RootNamespace>
-    <AssemblyName>Serilog.Sinks.RollingFileAlternate</AssemblyName>
+    <AssemblyName>Serilog.Sinks.RollingFileAlternate.Portable</AssemblyName>
+    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Serilog.Sinks.RollingFileAlternate.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\Serilog.Sinks.RollingFileAlternate.Portable.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -46,29 +48,24 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Serilog.1.5.7\lib\net45\Serilog.FullNetFx.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileSystem.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="IFileSystem.cs" />
     <Compile Include="LoggerConfigurationExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sinks\HourlyRolling\HourlyRollingFileSink.cs" />
+    <Compile Include="Sinks\HourlyRolling\HourlyFileSink.cs" />
+    <Compile Include="Sinks\HourlyRolling\HourlyLogFileDescription.cs" />
+    <Compile Include="Sinks\SizeRollingFileSink\LogFileInfo.cs" />
+    <Compile Include="Sinks\SizeRollingFileSink\SizeLimitedFileSink.cs" />
+    <Compile Include="Sinks\SizeRollingFileSink\SizeLimitedLogFileDescription.cs" />
+    <Compile Include="Sinks\SizeRollingFileSink\AlternateRollingFileSink.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Serilog.Sinks.RollingFileAlternate.Portable\Serilog.Sinks.RollingFileAlternate.Portable.csproj">
-      <Project>{d0129a92-ad43-4ce7-9090-4a5df073995b}</Project>
-      <Name>Serilog.Sinks.RollingFileAlternate.Portable</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

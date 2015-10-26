@@ -1,12 +1,11 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
+﻿using System;
+using System.Text;
+using Serilog.Core;
+using Serilog.Events;
+using Serilog.Formatting;
+
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
 {
-    using System;
-    using System.Text;
-
-    using Serilog.Core;
-    using Serilog.Events;
-    using Serilog.Formatting;
-
     /// <summary>
     /// Write log events to a series of files. Each file will be suffixed with a
     /// Date and 5 digit sequence number. No special template in the path specification is
@@ -21,19 +20,23 @@
         private readonly object syncRoot = new object();
         private bool disposed;
         private readonly string logDirectory;
+        private readonly IFileSystem fileSystem;
 
         /// <summary>
         /// Construct a <see cref="HourlyRollingFileSink"/>
         /// </summary>
         /// <param name="logDirectory"></param>
         /// <param name="formatter">The size in bytes at which a new file should be created</param>
+        /// <param name="fileSystem">Provides access to the file system.</param>
         /// <param name="encoding"></param>
         public HourlyRollingFileSink(
             string logDirectory,
             ITextFormatter formatter,
+            IFileSystem fileSystem,
             Encoding encoding = null)
         {
             this.formatter = formatter;
+            this.fileSystem = fileSystem;
             this.encoding = encoding;
             this.logDirectory = logDirectory;
             this.currentSink = this.GetLatestSink();
@@ -78,6 +81,7 @@
                 this.formatter,
                 this.logDirectory,
                 new HourlyLogFileDescription(DateTime.UtcNow),
+                fileSystem,
                 this.encoding);
         }
 
@@ -86,7 +90,7 @@
             var next = new HourlyLogFileDescription(dateTimeUtc);
             this.currentSink.Dispose();
 
-            return new HourlyFileSink(this.formatter, this.logDirectory, next, this.encoding);
+            return new HourlyFileSink(this.formatter, this.logDirectory, next, fileSystem, this.encoding);
         }
 
         /// <summary>

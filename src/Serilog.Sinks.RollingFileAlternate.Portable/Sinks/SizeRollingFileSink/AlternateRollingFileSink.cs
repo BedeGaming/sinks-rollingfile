@@ -6,8 +6,6 @@ using Serilog.Formatting;
 
 namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
-    using System.IO;
-
     /// <summary>
     /// Write log events to a series of files. Each file will be suffixed with a
     /// Date and 5 digit sequence number. No special template in the path specification is
@@ -23,6 +21,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private readonly object syncRoot = new object();
         private bool disposed;
         private readonly string logDirectory;
+        private readonly IFileSystem fileSystem;
 
         /// <summary>
         /// Construct a <see cref="AlternateRollingFileSink"/>
@@ -31,15 +30,18 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         /// <param name="formatter"></param>
         /// <param name="fileSizeLimitBytes">
         /// The size in bytes at which a new file should be created</param>
+        /// <param name="fileSystem">Provides access to the file system.</param>
         /// <param name="encoding"></param>
         public AlternateRollingFileSink(
             string logDirectory,
             ITextFormatter formatter,
             long fileSizeLimitBytes,
+            IFileSystem fileSystem,
             Encoding encoding = null)
         {
             this.formatter = formatter;
             this.fileSizeLimitBytes = fileSizeLimitBytes;
+            this.fileSystem = fileSystem;
             this.encoding = encoding;
             this.logDirectory = logDirectory;
             this.currentSink = GetLatestSink();
@@ -84,12 +86,13 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         {
             EnsureDirectoryCreated(this.logDirectory);
 
-            LogFileInfo logFileInfo = LogFileInfo.GetLatestOrNew(DateTime.UtcNow, this.logDirectory);
+            LogFileInfo logFileInfo = LogFileInfo.GetLatestOrNew(DateTime.UtcNow, this.logDirectory, fileSystem);
 
             return new SizeLimitedFileSink(
                 this.formatter,
                 this.logDirectory,
                 new SizeLimitedLogFileDescription(logFileInfo, this.fileSizeLimitBytes),
+                this.fileSystem,
                 this.encoding);
         }
 
@@ -98,14 +101,14 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             SizeLimitedLogFileDescription next = this.currentSink.LogFileDescription.Next();
             this.currentSink.Dispose();
 
-            return new SizeLimitedFileSink(this.formatter, this.logDirectory, next, this.encoding);
+            return new SizeLimitedFileSink(this.formatter, this.logDirectory, next, this.fileSystem, this.encoding);
         }
 
-        private static void EnsureDirectoryCreated(string path)
+        private void EnsureDirectoryCreated(string path)
         {
-            if (!Directory.Exists(path))
+            if (!fileSystem.DirectoryExists(path))
             {
-                Directory.CreateDirectory(path);
+                fileSystem.CreateDirectory(path);
             }
         }
 

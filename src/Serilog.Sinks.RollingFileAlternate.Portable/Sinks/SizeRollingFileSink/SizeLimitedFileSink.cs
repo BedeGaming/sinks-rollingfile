@@ -17,15 +17,18 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private readonly object syncRoot = new object();
         private bool disposed;
         private bool sizeLimitReached;
+        private IFileSystem fileSystem;
 
         public SizeLimitedFileSink(
             ITextFormatter formatter,
             string logDirectory,
             SizeLimitedLogFileDescription sizeLimitedLogFileDescription,
+            IFileSystem fileSystem,
             Encoding encoding = null)
         {
             this.formatter = formatter;
             this.sizeLimitedLogFileDescription = sizeLimitedLogFileDescription;
+            this.fileSystem = fileSystem;
             this.output = OpenFileForWriting(logDirectory, sizeLimitedLogFileDescription, encoding ?? Encoding.UTF8);
         }
 
@@ -48,7 +51,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             try
             {
                 var fullPath = Path.Combine(folderPath, logFileDescription.FileName);
-                var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
+                var stream = fileSystem.OpenFileForAppend(fullPath);
 
                 return new StreamWriter(stream, encoding ?? Encoding.UTF8);
             }
@@ -64,11 +67,11 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             return OpenFileForWriting(folderPath, logFileDescription.Next(), encoding);
         }
 
-        private static void EnsureDirectoryCreated(string path)
+        private void EnsureDirectoryCreated(string path)
         {
-            if (!Directory.Exists(path))
+            if (!fileSystem.DirectoryExists(path))
             {
-                Directory.CreateDirectory(path);
+                fileSystem.CreateDirectory(path);
             }
         }
 

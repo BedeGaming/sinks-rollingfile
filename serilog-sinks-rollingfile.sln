@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{9F725242-157F-444F-8029-8BAE22D3F78F}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{11
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SizeRollingExample", "examples\SizeRollingExample\SizeRollingExample.csproj", "{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileAlternate.Portable", "src\Serilog.Sinks.RollingFileAlternate.Portable\Serilog.Sinks.RollingFileAlternate.Portable.csproj", "{D0129A92-AD43-4CE7-9090-4A5DF073995B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0129A92-AD43-4CE7-9090-4A5DF073995B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0129A92-AD43-4CE7-9090-4A5DF073995B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0129A92-AD43-4CE7-9090-4A5DF073995B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0129A92-AD43-4CE7-9090-4A5DF073995B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,5 +53,6 @@ Global
 		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF} = {3E6972F1-7310-4BBF-A220-6B177FF4E65C}
 		{35BA7CB4-7E30-4E21-B176-B767295E5685} = {7647A4BD-398B-4497-B740-D0E128381C37}
 		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B} = {11FB22BB-F1D5-47D4-AA2F-8EBD0103FF25}
+		{D0129A92-AD43-4CE7-9090-4A5DF073995B} = {3E6972F1-7310-4BBF-A220-6B177FF4E65C}
 	EndGlobalSection
 EndGlobal

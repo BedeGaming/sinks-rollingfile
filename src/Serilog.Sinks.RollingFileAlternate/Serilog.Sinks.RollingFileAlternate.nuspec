@@ -12,6 +12,6 @@
     <tags>serilog logging filelog log</tags>
     <dependencies>
       <dependency id="Serilog" version="[1.5.7,2)" />
-    </dependencies>
+    </dependencies> 
   </metadata>
 </package>

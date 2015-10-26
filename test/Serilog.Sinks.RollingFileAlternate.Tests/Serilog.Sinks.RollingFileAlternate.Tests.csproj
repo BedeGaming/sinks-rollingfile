@@ -65,6 +65,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Serilog.Sinks.RollingFileAlternate.Portable\Serilog.Sinks.RollingFileAlternate.Portable.csproj">
+      <Project>{D0129A92-AD43-4CE7-9090-4A5DF073995B}</Project>
+      <Name>Serilog.Sinks.RollingFileAlternate.Portable</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Serilog.Sinks.RollingFileAlternate\Serilog.Sinks.RollingFileAlternate.csproj">
       <Project>{d6dc593e-0ce9-423b-9fa8-33f2df77a2ef}</Project>
       <Name>Serilog.Sinks.RollingFileAlternate</Name>

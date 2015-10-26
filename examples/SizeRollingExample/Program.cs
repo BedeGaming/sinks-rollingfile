@@ -1,5 +1,4 @@
 ﻿using Serilog;
-using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
 
 namespace SizeRollingExample
 {

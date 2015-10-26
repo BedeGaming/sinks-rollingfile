@@ -16,9 +16,10 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             [Test]
             public void SequenceIsOneWhenNoPreviousFile()
             {
+                var fileSystem = new FileSystem();
                 using (var dir = new TestDirectory())
                 {
-                    var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
+                    var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory, fileSystem);
                     Assert.That(latest.Sequence, Is.EqualTo(1));
                 }
             }
@@ -27,12 +28,13 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             public void SequenceIsEqualToTheHighestFileWritten()
             {
                 var date = new DateTime(2015, 01, 15);
+                var fileSystem = new FileSystem();
                 using (var dir = new TestDirectory())
                 {
                     dir.CreateLogFile(date, 1);
                     dir.CreateLogFile(date, 2);
                     dir.CreateLogFile(date, 3);
-                    var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
+                    var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory, fileSystem);
                     Assert.That(latest.Sequence, Is.EqualTo(3));
                 }
             }
@@ -41,8 +43,9 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         [Test]
         public void ItCreatesNewFileWhenSizeLimitReached()
         {
+            var fileSystem = new FileSystem();
             using (var dir = new TestDirectory())
-            using (var sizeRollingSink = new AlternateRollingFileSink(dir.LogDirectory, new RawFormatter(), 10))
+            using (var sizeRollingSink = new AlternateRollingFileSink(dir.LogDirectory, new RawFormatter(), 10, fileSystem))
             {
                 var logEvent = Some.InformationEvent();
                 sizeRollingSink.Emit(logEvent);

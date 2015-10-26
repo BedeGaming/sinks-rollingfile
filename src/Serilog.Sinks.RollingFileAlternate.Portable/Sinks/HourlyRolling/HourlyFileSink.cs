@@ -1,12 +1,11 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
+﻿using System;
+using System.IO;
+using System.Text;
+using Serilog.Events;
+using Serilog.Formatting;
+
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
 {
-    using System;
-    using System.IO;
-    using System.Text;
-
-    using Serilog.Events;
-    using Serilog.Formatting;
-
     internal class HourlyFileSink : IDisposable
     {
         private static readonly string ThisObjectName = typeof(HourlyFileSink).Name;
@@ -16,16 +15,18 @@
         private readonly StreamWriter output;
         private readonly object syncRoot = new object();
         private bool disposed;
+        private IFileSystem fileSystem;
 
         internal HourlyFileSink(
             ITextFormatter formatter,
             string logRootDirectory,
             HourlyLogFileDescription hourlyLogFileDescription,
+            IFileSystem fileSytem,
             Encoding encoding = null)
         {
             this.formatter = formatter;
             this.hourlyLogFileDescription = hourlyLogFileDescription;
-
+            this.fileSystem = fileSytem;
             string logDir = Path.Combine(logRootDirectory, hourlyLogFileDescription.Date.ToString("yyyy-MM-dd"));
 
             this.output = this.OpenFileForWriting(logDir, hourlyLogFileDescription, encoding ?? Encoding.UTF8);
@@ -62,7 +63,7 @@
 
                 if (this.output == null)
                 {
-                    return; 
+                    return;
                 }
 
                 this.formatter.Format(logEvent, this.output);
@@ -78,16 +79,15 @@
             EnsureDirectoryCreated(folderPath);
 
             var fullPath = Path.Combine(folderPath, logFileDescription.FileName);
-            var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
-
+            var stream = fileSystem.OpenFileForAppend(fullPath);
             return new StreamWriter(stream, encoding ?? Encoding.UTF8);
         }
 
-        private static void EnsureDirectoryCreated(string path)
+        private void EnsureDirectoryCreated(string path)
         {
-            if (!Directory.Exists(path))
+            if (!fileSystem.DirectoryExists(path))
             {
-                Directory.CreateDirectory(path);
+                fileSystem.CreateDirectory(path);
             }
         }
     }

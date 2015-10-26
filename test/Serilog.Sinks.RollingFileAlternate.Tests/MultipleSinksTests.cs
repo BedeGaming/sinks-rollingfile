@@ -31,8 +31,9 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         private static AlternateRollingFileSink AlternateRollingFileSinkFileSink()
         {
             var formatter = new RawFormatter();
+            var fileSystem = new FileSystem();
 
-            return new AlternateRollingFileSink(@"c:\temp", formatter, 100000, Encoding.UTF8);
+            return new AlternateRollingFileSink(@"c:\temp", formatter, 100000, fileSystem, Encoding.UTF8);
         }
     }
 }
