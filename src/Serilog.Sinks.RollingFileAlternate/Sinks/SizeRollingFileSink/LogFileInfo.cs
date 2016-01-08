@@ -1,6 +1,7 @@
 ﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Text.RegularExpressions;
@@ -14,13 +15,16 @@
         internal string FileName { get; private set; }
         internal DateTime Date { get; private set; }
         internal int ProcessId { get; private set; }
+        internal string ProcessName { get; private set; }
 
         public LogFileInfo(DateTime date, uint sequence)
         {
+            var processData = GetProcess();
             this.Date = date;
             this.Sequence = sequence;
-            this.ProcessId = GetProcessId();
-            this.FileName = String.Format("{0}-{1}-{2}.log", date.ToString(DateFormat), sequence.ToString(NumberFormat), this.ProcessId);
+            this.ProcessId = processData.Key;
+            this.ProcessName = processData.Value;
+            this.FileName = String.Format("{0}-{1}-{2}-{3}.log", date.ToString(DateFormat), this.ProcessId, this.ProcessName, sequence.ToString(NumberFormat));
         }
 
         public LogFileInfo Next()
@@ -34,18 +38,20 @@
             return new LogFileInfo(now, this.Sequence + 1);
         }
 
-        private int GetProcessId()
+        private KeyValuePair<int, string> GetProcess()
         {
             var process = Process.GetCurrentProcess();
             if (process != null)
             {
-                return process.Id;
+                var name = process.ProcessName.Length < 20 ? process.ProcessName : process.ProcessName.Substring(0, 20) + "...";
+                return new KeyValuePair<int, string>(process.Id, name);
             }
             else
             {
-                return 0;
+                return new KeyValuePair<int, string>(0, string.Empty);
             }
         }
+
 
         internal static LogFileInfo GetLatestOrNew(DateTime date, string logDirectory)
         {
@@ -58,9 +64,8 @@
             }
             else
             {
-                pattern = string.Format("{0}-{1}-{2}.log", date.ToString(DateFormat), @"(\d{5})", logFileInfo.ProcessId);
+                pattern = string.Format("{0}-{1}-{2}-{3}.log", date.ToString(DateFormat), logFileInfo.ProcessId, logFileInfo.ProcessName, @"(\d{5})");
             }
-
 
             foreach (var filePath in Directory.GetFiles(logDirectory))
             {
