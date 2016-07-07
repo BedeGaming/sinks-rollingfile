@@ -1,17 +1,17 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
-{
-    using System;
-    using System.IO;
-    using System.Text.RegularExpressions;
+﻿using System;
+using System.IO;
+using System.Text.RegularExpressions;
 
-    internal class LogFileInfo
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
+{
+    public class LogFileInfo
     {
         private const string NumberFormat = "00000";
         private const string DateFormat = "yyyyMMdd";
 
-        internal uint Sequence { get; private set; }
-        internal string FileName { get; private set; }
-        internal DateTime Date { get; private set; }
+        public uint Sequence { get; private set; }
+        public string FileName { get; private set; }
+        public DateTime Date { get; private set; }
 
         public LogFileInfo(DateTime date, uint sequence)
         {
@@ -31,7 +31,7 @@
             return new LogFileInfo(now, this.Sequence + 1);
         }
 
-        internal static LogFileInfo GetLatestOrNew(DateTime date, string logDirectory)
+        public static LogFileInfo GetLatestOrNew(DateTime date, string logDirectory)
         {
             string pattern = date.ToString(DateFormat) + @"-(\d{5}).log";
 

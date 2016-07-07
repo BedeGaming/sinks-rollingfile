@@ -45,7 +45,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             this.currentSink = GetLatestSink();
         }
 
-        internal SizeLimitedLogFileDescription CurrentLogFile { get { return this.currentSink.LogFileDescription; } }
+        public SizeLimitedLogFileDescription CurrentLogFile { get { return this.currentSink.LogFileDescription; } }
 
         /// <summary>
         /// Emits a log event to this sink

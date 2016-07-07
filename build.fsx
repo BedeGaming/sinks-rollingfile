@@ -4,6 +4,9 @@ let sd = __SOURCE_DIRECTORY__
 let projectName = "Serilog.Sinks.RollingFileAlternate"
 
 open Fake
+open System
+open System.Collections.Generic
+open System.IO
 
 let buildDir = sd @@ "build"
 let packageOutFolder = buildDir @@ "package" @@ "out"
@@ -45,45 +48,81 @@ Target "PatchAssemblyInfo" <| fun _ ->
 
     CreateCSharpAssemblyInfoWithConfig pathToPatch attributes config
 
-Target "Clean"
+// helpers
 
-Target "Build" <| fun _ ->
-    !! "src/**/*.csproj"
-    |> MSBuildRelease "" "Rebuild"
-    |> Log "Building Sink"
+let inline FileName fullName = Path.GetFileName fullName
 
-Target "BuildTests" <| fun _ ->
-    !! "test/**/*.csproj"
-    |> MSBuildRelease "build/out/tests" "Build"
-    |> Log "Building Tests"
+let BuildFailed errors =
+    raise (BuildException("The project build failed.", errors |> List.ofSeq))
 
-Target "InstallNunit" <| fun _ ->
-        RestorePackageId (
-            fun p ->
-                { p with
-                    OutputPath = toolsPath @@ "nunit-runner"
-                    ExcludeVersion = true })
-            "NUnit.Runners"
+let DeployFailed errors =
+    raise (BuildException("The project deployment failed.", errors |> List.ofSeq))
 
-Target "ExecuteTests" <| fun _ ->
-    !! "build/out/tests/*.dll"
-    |> NUnit (
-        fun p ->
-            { p with
-                ToolPath = toolsPath @@ "nunit-runner/NUnit.Runners/tools"
-                Framework = "4.5" })
+let TestsFailed errors =
+    raise (BuildException("The project tests failed.", errors |> List.ofSeq))
 
-open NuGetHelper
-Target "PackageNuget" <| fun _ ->
+let Run workingDirectory fileName args =
+    let errors = new List<string>()
+    let messages = new List<string>()
+    let timout = TimeSpan.MaxValue
+        
+    let error msg =
+        traceError msg
+        errors.Add msg
+        
+    let message msg =
+        traceImportant msg
+        messages.Add msg
+        
+    let code = 
+        ExecProcessWithLambdas (fun info ->
+            info.FileName <- fileName
+            info.WorkingDirectory <- workingDirectory
+            info.Arguments <- args
+        ) timout true error message
+    
+    ProcessResult.New code messages errors
 
-    let parm p =
-        { p with
-            WorkingDir = sd
-            Properties = [ "Configuration", "Release" ]
-            SymbolPackage = NugetSymbolPackage.Nuspec
-            Version = releaseNotes.NugetVersion
-            OutputPath = "build" @@ "package " @@ "out" }
-    NuGetPack parm (sd @@ "src" @@ "Serilog.Sinks.RollingFileAlternate" @@ "Serilog.Sinks.RollingFileAlternate.csproj")
+let dotnet failedF args =
+    let result = Run currentDirectory "dotnet" args
+    if not result.OK then failedF result.Errors
+
+let BuildProject project =
+    dotnet BuildFailed ("pack \"" + project + "\" -c Release")
+
+let RestoreProject backup =
+    if endsWith ".bak" backup then
+        CopyFile (replace ".bak" "" backup) backup
+        DeleteFile backup
+
+Target "Clean" (fun _ ->
+    !! "artifacts" ++ "src/*/bin" ++ "test/*/bin"
+        |> DeleteDirs
+)
+
+Target "RestoreDependencies" (fun _ ->
+    dotnet BuildFailed "restore"
+)
+
+Target "BuildProjects" (fun _ ->
+    !! "src/*/project.json" 
+        |> Seq.iter(BuildProject)
+)
+
+Target "CopyArtifacts" (fun _ ->    
+    !! "src/*/bin/**/*.nupkg" 
+        |> Seq.iter(CopyArtifact)
+)
+
+Target "RunTests" (fun _ ->
+    !! "test/*/project.json" 
+        |> Seq.iter(RunTests)
+)
+
+FinalTarget "RestoreProjects" (fun _ ->
+    !! "src/*/project.json.bak" ++ "src/*/project.lock.json.bak" ++ "test/*/project.json.bak" ++ "test/*/project.lock.json.bak"
+        |> Seq.iter(RestoreProject)
+)
 
 open System.Text.RegularExpressions
 
@@ -116,19 +155,14 @@ Target "Publish" <| fun _ ->
             Have you not built the release version yet?"
             (string releaseNotes.SemVer)
 
-let nunitIsInstalled = 
-    fileExists (toolsPath @@ "nunit-runner/Nunit.Runners/tools/nunit-console.exe")
 
-Target "Default" DoNothing
+Target "Build" (fun _ ->)
 
-"PatchAssemblyInfo" ==> "Build" |> ignore
-"InstallNunit" =?> ("ExecuteTests", not nunitIsInstalled) |> ignore
-"BuildTests" ==> "ExecuteTests" |> ignore
-"Build" ==> "BuildTests" |> ignore
-"ExecuteTests" ==> "PackageNuget" |> ignore
-"Build" ==> "PackageNuget" ==> "Default" |> ignore
-
-sprintf "Building version: %s" (string releaseNotes.SemVer) |> traceImportant
-RestorePackages()
-RunTargetOrDefault "Default"
-
+"Clean"
+  ==> "BackupProjects"
+  ==> "UpdateVersions"
+  ==> "RestoreDependencies"
+  ==> "BuildProjects"
+  ==> "CopyArtifacts"
+  ==> "RunTests"
+  ==> "Build"

@@ -1,29 +1,28 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using Serilog.Formatting.Raw;
 using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
 using Serilog.Sinks.RollingFileAlternate.Tests.Support;
 
 namespace Serilog.Sinks.RollingFileAlternate.Tests
 {
-    [TestFixture]
     public class SizeRollingFileSinkTests
     {
         public class GetLatestLogFileInfoOrNew
         {
-            [Test]
+            [Fact]
             public void SequenceIsOneWhenNoPreviousFile()
             {
                 using (var dir = new TestDirectory())
                 {
                     var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
-                    Assert.That(latest.Sequence, Is.EqualTo(1));
+                    Assert.Equal<uint>(latest.Sequence, 1);
                 }
             }
 
-            [Test]
+            [Fact]
             public void SequenceIsEqualToTheHighestFileWritten()
             {
                 var date = new DateTime(2015, 01, 15);
@@ -33,12 +32,12 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
                     dir.CreateLogFile(date, 2);
                     dir.CreateLogFile(date, 3);
                     var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
-                    Assert.That(latest.Sequence, Is.EqualTo(3));
+                    Assert.Equal<uint>(latest.Sequence, 3);
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void ItCreatesNewFileWhenSizeLimitReached()
         {
             using (var dir = new TestDirectory())
@@ -46,9 +45,9 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             {
                 var logEvent = Some.InformationEvent();
                 sizeRollingSink.Emit(logEvent);
-                Assert.That(sizeRollingSink.CurrentLogFile.LogFileInfo.Sequence, Is.EqualTo(1));
+                Assert.Equal<uint>(sizeRollingSink.CurrentLogFile.LogFileInfo.Sequence, 1);
                 sizeRollingSink.Emit(logEvent);
-                Assert.That(sizeRollingSink.CurrentLogFile.LogFileInfo.Sequence, Is.EqualTo(2));
+                Assert.Equal<uint>(sizeRollingSink.CurrentLogFile.LogFileInfo.Sequence, 2);
             }
         }
 

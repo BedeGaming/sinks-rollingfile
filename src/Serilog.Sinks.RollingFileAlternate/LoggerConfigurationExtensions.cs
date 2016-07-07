@@ -1,13 +1,13 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate
+﻿using System;
+
+using Serilog.Configuration;
+using Serilog.Events;
+using Serilog.Formatting.Display;
+using Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling;
+using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
+
+namespace Serilog.Sinks.RollingFileAlternate
 {
-    using System;
-
-    using Serilog.Configuration;
-    using Serilog.Events;
-    using Serilog.Formatting.Display;
-    using Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling;
-    using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
-
     /// <summary>
     /// Configuration extensions to be able to use fluent syntax for constructing
     /// a file sink that rolls files based on size.

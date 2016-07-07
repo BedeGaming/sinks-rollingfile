@@ -1,0 +1,50 @@
+{
+"packOptions": {
+    "summary": "A serilog sink for rolling files based on size and time",
+    "tags": [ "serilog", "logging", "filelog", "log" ],
+    "owners": [ "martin.shinz", "joseph.jeganathan" ],
+    "projectUrl": "https://github.com/bedegaming/sinks-rollingfile",
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/bedegaming/sinks-rollingfile"
+    }
+  },
+  "version": "2.0",
+  "authors": [ "martin.shinz", "joseph.jeganathan" ],
+  "description": "A serilog sink for rolling files based on size and time",
+  "title": "Serilog Rolling File Alternative",
+  "dependencies": {
+    "NETStandard.Library": "1.5.0-rc2-24027",
+    "Serilog": "2.0.0"
+  },
+
+  "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "System.IO": "4.0.0.0",
+        "System.Text.RegularExpressions": "4.0.0.0"
+      }
+    },
+    "net451": {
+      "frameworkAssemblies": {
+        "System.IO": "4.0.0.0",
+        "System.Text.RegularExpressions": "4.0.0.0"
+      }
+    },
+    "netstandard1.3": {
+      "dependencies": {
+        "System.IO": "4.1.0",
+        "System.Text.RegularExpressions": "4.1.0"
+      }
+    }
+  },
+
+  "buildOptions": {
+    "warningsAsErrors": true
+  },
+
+  "tooling": {
+    "defaultNamespace": "Serilog.Sinks.RollingFileAlternate"
+  }
+}
