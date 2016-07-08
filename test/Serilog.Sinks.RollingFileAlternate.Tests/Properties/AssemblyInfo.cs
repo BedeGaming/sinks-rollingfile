@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Serilog.Sinks.RollingFileV2.Tests")]
+[assembly: AssemblyTitle("Serilog.Sinks.RollingFileAlternate.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Serilog.Sinks.RollingFileV2.Tests")]
+[assembly: AssemblyProduct("Serilog.Sinks.RollingFileAlternate.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -1,4 +1,4 @@
-{
+﻿{
   "dependencies": {
     "Serilog": "2.0.0",
     "Serilog.Sinks.RollingFileAlternate": {
