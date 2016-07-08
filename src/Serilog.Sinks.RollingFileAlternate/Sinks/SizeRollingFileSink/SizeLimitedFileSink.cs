@@ -7,7 +7,7 @@ using Serilog.Formatting;
 
 namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
-    public class SizeLimitedFileSink : ILogEventSink, IDisposable
+    internal class SizeLimitedFileSink : ILogEventSink, IDisposable
     {
         private static readonly string ThisObjectName = typeof(SizeLimitedFileSink).Name;
 
@@ -18,7 +18,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private bool disposed;
         private bool sizeLimitReached;
 
-        internal SizeLimitedFileSink(
+        public SizeLimitedFileSink(
             ITextFormatter formatter,
             string logDirectory,
             SizeLimitedLogFileDescription sizeLimitedLogFileDescription,
@@ -98,7 +98,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             }
         }
 
-        public bool SizeLimitReached { get { return this.sizeLimitReached; } }
+        internal bool SizeLimitReached { get { return this.sizeLimitReached; } }
 
         internal SizeLimitedLogFileDescription LogFileDescription
         {
