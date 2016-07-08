@@ -18,7 +18,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private bool disposed;
         private bool sizeLimitReached;
 
-        public SizeLimitedFileSink(
+        internal SizeLimitedFileSink(
             ITextFormatter formatter,
             string logDirectory,
             SizeLimitedLogFileDescription sizeLimitedLogFileDescription,
@@ -29,7 +29,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             this.output = OpenFileForWriting(logDirectory, sizeLimitedLogFileDescription, encoding ?? Encoding.UTF8);
         }
 
-        public SizeLimitedFileSink(
+        internal SizeLimitedFileSink(
             ITextFormatter formatter,
             SizeLimitedLogFileDescription sizeLimitedLogFileDescription,
             StreamWriter writer)

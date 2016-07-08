@@ -1,6 +1,6 @@
 ﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
-    public class SizeLimitedLogFileDescription
+    internal class SizeLimitedLogFileDescription
     {
         public readonly long SizeLimitBytes;
         public readonly LogFileInfo LogFileInfo;

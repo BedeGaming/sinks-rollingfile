@@ -4,14 +4,14 @@ using System.Text.RegularExpressions;
 
 namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
-    public class LogFileInfo
+    internal class LogFileInfo
     {
         private const string NumberFormat = "00000";
         private const string DateFormat = "yyyyMMdd";
 
-        public uint Sequence { get; private set; }
-        public string FileName { get; private set; }
-        public DateTime Date { get; private set; }
+        internal uint Sequence { get; private set; }
+        internal string FileName { get; private set; }
+        internal DateTime Date { get; private set; }
 
         public LogFileInfo(DateTime date, uint sequence)
         {
@@ -31,7 +31,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             return new LogFileInfo(now, this.Sequence + 1);
         }
 
-        public static LogFileInfo GetLatestOrNew(DateTime date, string logDirectory)
+        internal static LogFileInfo GetLatestOrNew(DateTime date, string logDirectory)
         {
             string pattern = date.ToString(DateFormat) + @"-(\d{5}).log";
 
