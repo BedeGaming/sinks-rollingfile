@@ -1,5 +1,5 @@
 ### 2.0.0 (Released 2016/07/08)
-* Migration to work with .Net Standard 1.3
+* Migration to work with .Net Standard 1.6
 
 ### 1.3.0 (Released 2015/09/28)
 * Hourly rolling log files
