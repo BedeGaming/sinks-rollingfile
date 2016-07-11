@@ -34,7 +34,7 @@ foreach {
 }
 
 # Restore packages and build product
-& $dotnet restore -v Minimal # Restore all packages
+& $dotnet restore # Restore all packages
 if ($LASTEXITCODE -ne 0)
 {
     throw "dotnet restore failed with exit code $LASTEXITCODE"
