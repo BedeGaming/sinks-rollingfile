@@ -10,7 +10,7 @@
       "url": "https://github.com/bedegaming/sinks-rollingfile"
     }
   },
-  "version": "2.0.0-*",
+  "version": "2.0.0",
   "authors": [ "martin.shinz", "joseph.jeganathan" ],
   "description": "A serilog sink for rolling files based on size and time",
   "title": "Serilog Rolling File Alternative",
