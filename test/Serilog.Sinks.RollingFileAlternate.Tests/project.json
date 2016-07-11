@@ -1,0 +1,42 @@
+﻿{
+  "dependencies": {
+    "Serilog": "2.0.0",
+    "Serilog.Sinks.RollingFileAlternate": {
+        "target": "project"        
+    },
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "buildOptions": {
+        "define": [ "ASYNC", "COREFX", "XUNIT2", "SQLITE" ]
+      },
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0",
+          "type": "platform"
+        },
+        "Microsoft.Data.Sqlite": "1.0.0"
+      }
+    }
+  },
+
+  "buildOptions": {
+    "warningsAsErrors": true
+  },
+
+  "testRunner": "xunit",
+
+  "tools": {
+    "Microsoft.DotNet.Watcher.Tools": {
+      "version": "1.0.0-*",
+      "imports": "portable-net451+win8"
+    }
+  },
+
+  "tooling": {
+    "defaultNamespace": "Serilog.Sinks.RollingFileAlternate.Tests"
+  }
+}

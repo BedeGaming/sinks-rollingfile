@@ -1,12 +1,12 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
+﻿using System;
+using System.IO;
+using System.Text;
+
+using Serilog.Events;
+using Serilog.Formatting;
+
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
 {
-    using System;
-    using System.IO;
-    using System.Text;
-
-    using Serilog.Events;
-    using Serilog.Formatting;
-
     internal class HourlyFileSink : IDisposable
     {
         private static readonly string ThisObjectName = typeof(HourlyFileSink).Name;

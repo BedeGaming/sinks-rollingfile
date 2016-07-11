@@ -1,9 +1,9 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
-{
-    using System;
-    using System.IO;
-    using System.Text.RegularExpressions;
+﻿using System;
+using System.IO;
+using System.Text.RegularExpressions;
 
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
+{
     internal class LogFileInfo
     {
         private const string NumberFormat = "00000";

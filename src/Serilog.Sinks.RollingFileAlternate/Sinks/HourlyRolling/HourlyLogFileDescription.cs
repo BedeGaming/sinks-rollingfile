@@ -1,7 +1,7 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
-{
-    using System;
+﻿using System;
 
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
+{
     internal class HourlyLogFileDescription
     {
         private readonly DateTime dateTime;

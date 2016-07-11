@@ -1,25 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{9F725242-157F-444F-8029-8BAE22D3F78F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		assets\CommonAssemblyInfo.cs = assets\CommonAssemblyInfo.cs
+		build.cmd = build.cmd
+		build.fsx = build.fsx
+		build.sh = build.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3E6972F1-7310-4BBF-A220-6B177FF4E65C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7647A4BD-398B-4497-B740-D0E128381C37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileAlternate", "src\Serilog.Sinks.RollingFileAlternate\Serilog.Sinks.RollingFileAlternate.csproj", "{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serilog.Sinks.RollingFileAlternate.Tests", "test\Serilog.Sinks.RollingFileAlternate.Tests\Serilog.Sinks.RollingFileAlternate.Tests.csproj", "{35BA7CB4-7E30-4E21-B176-B767295E5685}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{11FB22BB-F1D5-47D4-AA2F-8EBD0103FF25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SizeRollingExample", "examples\SizeRollingExample\SizeRollingExample.csproj", "{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Serilog.Sinks.RollingFileAlternate", "src\Serilog.Sinks.RollingFileAlternate\Serilog.Sinks.RollingFileAlternate.xproj", "{F836EDD6-5958-4DA5-B9B8-D77113083F22}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Serilog.Sinks.RollingFileAlternate.Tests", "test\Serilog.Sinks.RollingFileAlternate.Tests\Serilog.Sinks.RollingFileAlternate.Tests.xproj", "{060CF269-C2BF-4529-8395-BDE3C92FD151}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ExampleApp", "examples\ExampleApp\ExampleApp.xproj", "{36459431-03AE-4CD5-B4E5-1784571D9D5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,25 +29,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35BA7CB4-7E30-4E21-B176-B767295E5685}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F836EDD6-5958-4DA5-B9B8-D77113083F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F836EDD6-5958-4DA5-B9B8-D77113083F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F836EDD6-5958-4DA5-B9B8-D77113083F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F836EDD6-5958-4DA5-B9B8-D77113083F22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{060CF269-C2BF-4529-8395-BDE3C92FD151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{060CF269-C2BF-4529-8395-BDE3C92FD151}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{060CF269-C2BF-4529-8395-BDE3C92FD151}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{060CF269-C2BF-4529-8395-BDE3C92FD151}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36459431-03AE-4CD5-B4E5-1784571D9D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36459431-03AE-4CD5-B4E5-1784571D9D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36459431-03AE-4CD5-B4E5-1784571D9D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36459431-03AE-4CD5-B4E5-1784571D9D5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D6DC593E-0CE9-423B-9FA8-33F2DF77A2EF} = {3E6972F1-7310-4BBF-A220-6B177FF4E65C}
-		{35BA7CB4-7E30-4E21-B176-B767295E5685} = {7647A4BD-398B-4497-B740-D0E128381C37}
-		{C78FDAA8-2135-41A1-84E1-63E8FB640C6B} = {11FB22BB-F1D5-47D4-AA2F-8EBD0103FF25}
+		{F836EDD6-5958-4DA5-B9B8-D77113083F22} = {3E6972F1-7310-4BBF-A220-6B177FF4E65C}
+		{060CF269-C2BF-4529-8395-BDE3C92FD151} = {7647A4BD-398B-4497-B740-D0E128381C37}
+		{36459431-03AE-4CD5-B4E5-1784571D9D5C} = {11FB22BB-F1D5-47D4-AA2F-8EBD0103FF25}
 	EndGlobalSection
 EndGlobal

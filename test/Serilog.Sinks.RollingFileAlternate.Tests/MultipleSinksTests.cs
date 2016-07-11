@@ -1,16 +1,15 @@
 ﻿using System.IO;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Serilog.Formatting.Raw;
 using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
 using Serilog.Sinks.RollingFileAlternate.Tests.Support;
 
 namespace Serilog.Sinks.RollingFileAlternate.Tests
 {
-    [TestFixture]
     public class MultipleSinksTests
     {
-        [Test]
+        [Fact]
         public void WillLogToSeparateFiles()
         {
             var sink1 = AlternateRollingFileSinkFileSink();
@@ -18,14 +17,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
 
             var @event = Some.InformationEvent();
             sink1.Emit(@event);
-            try
-            {
-                sink2.Emit(@event);
-            }
-            catch (IOException ex)
-            {
-                Assert.Fail(ex.Message);
-            }
+            sink2.Emit(@event);
         }
 
         private static AlternateRollingFileSink AlternateRollingFileSinkFileSink()

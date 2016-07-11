@@ -1,18 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Serilog.Formatting.Raw;
 using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
 using Serilog.Sinks.RollingFileAlternate.Tests.Support;
 
 namespace Serilog.Sinks.RollingFileAlternate.Tests
 {
-    using System;
-
-    [TestFixture]
     public class SizeLimitReachedTests
     {
-        [Test]
+        [Fact]
         public void ReachedWhenAmountOfCharactersWritten()
         {
             var formatter = new RawFormatter();
@@ -24,7 +22,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             {
                 var @event = Some.InformationEvent();
                 sink.Emit(@event);
-                Assert.That(sink.SizeLimitReached, Is.True);
+                Assert.True(sink.SizeLimitReached);
             }
         }
     }

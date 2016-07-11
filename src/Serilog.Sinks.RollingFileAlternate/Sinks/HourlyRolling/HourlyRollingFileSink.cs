@@ -1,12 +1,12 @@
-﻿namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
+﻿using System;
+using System.Text;
+
+using Serilog.Core;
+using Serilog.Events;
+using Serilog.Formatting;
+
+namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
 {
-    using System;
-    using System.Text;
-
-    using Serilog.Core;
-    using Serilog.Events;
-    using Serilog.Formatting;
-
     /// <summary>
     /// Write log events to a series of files. Each file will be suffixed with a
     /// Date and 5 digit sequence number. No special template in the path specification is
