@@ -1,3 +1,6 @@
+### 2.0.1 (Released 2016/07/12)
+* Fixed System.IO references for earlier frameowrk versions
+
 ### 2.0.0 (Released 2016/07/08)
 * Migration to work with .Net Standard 1.6
 
