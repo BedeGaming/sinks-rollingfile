@@ -58,9 +58,9 @@ foreach {
 dir "src/*" | where {$_.PsIsContainer} |
 foreach {
     if ($PreReleaseSuffix) {
-        & $dotnet pack "$_" -c Release -o .\.nupkg\ --no-build --version-suffix "$PreReleaseSuffix"   
+        & $dotnet pack "$_" -c Release -o .\.nupkg\ --version-suffix "$PreReleaseSuffix"   
     } else {
-        & $dotnet pack "$_" -c Release -o .\.nupkg\ --no-build
+        & $dotnet pack "$_" -c Release -o .\.nupkg\
     }
 }
 

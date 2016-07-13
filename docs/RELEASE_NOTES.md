@@ -1,3 +1,6 @@
+### 2.0.3 (Released 2016/07/13)
+* Fixing package not containing dlls when built in TC
+
 ### 2.0.2 (Released 2016/07/12)
 * Fixed System.Text.RegularExpressions references for earlier framework versions
 
