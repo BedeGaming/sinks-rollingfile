@@ -23,9 +23,9 @@ Log.Information("This will be written to the rolling file set");
 The sink is configured with the path of a folder for the log file set:
 
 ```
-20160631-00001.txt
-20160701-00001.txt
-20160701-00002.txt
+logs\20160631-00001.txt
+logs\20160701-00001.txt
+logs\20160701-00002.txt
 ```
 
 > **Important:** Only one process may write to a log file at a given time. For multi-process scenarios, either use separate files or [one of the non-file-based sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks).
