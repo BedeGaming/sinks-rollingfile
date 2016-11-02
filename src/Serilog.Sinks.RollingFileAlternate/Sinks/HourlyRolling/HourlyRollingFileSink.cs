@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Text;
-
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
+using Serilog.Debugging;
+using System.IO;
+using System.Linq;
 
 namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
 {
@@ -16,6 +18,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
     {
         private static readonly string ThisObjectName = (typeof (HourlyFileSink).Name);
         private readonly ITextFormatter formatter;
+        private readonly int? retainedFileCountLimit;
         private readonly Encoding encoding;
         private HourlyFileSink currentSink;
         private readonly object syncRoot = new object();
@@ -27,13 +30,17 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
         /// </summary>
         /// <param name="logDirectory"></param>
         /// <param name="formatter">The size in bytes at which a new file should be created</param>
+        /// <param name="retainedFileCountLimit">The maximum number of log files that will be retained,
+        /// including the current log file. The default is null which is unlimited.</param>
         /// <param name="encoding"></param>
         public HourlyRollingFileSink(
             string logDirectory,
             ITextFormatter formatter,
+            int? retainedFileCountLimit = null,
             Encoding encoding = null)
         {
             this.formatter = formatter;
+            this.retainedFileCountLimit = retainedFileCountLimit;
             this.encoding = encoding;
             this.logDirectory = logDirectory;
             this.currentSink = this.GetLatestSink();
@@ -84,9 +91,38 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
         private HourlyFileSink NextFileSink(DateTime dateTimeUtc)
         {
             var next = new HourlyLogFileDescription(dateTimeUtc);
+            ApplyRetentionPolicy();
             this.currentSink.Dispose();
 
             return new HourlyFileSink(this.formatter, this.logDirectory, next, this.encoding);
+        }
+
+        private void ApplyRetentionPolicy()
+        {
+            if (retainedFileCountLimit == null) return;
+
+            var newestFirst = Directory.GetFiles(this.logDirectory)
+                .Select(m => new FileInfo(m))
+                .OrderByDescending(m => m.CreationTime)
+                .Select(m => m.Name);
+
+            var toRemove = newestFirst
+                .Where(n => StringComparer.OrdinalIgnoreCase.Compare(this.currentSink.LogFileDescription.FileName, n) != 0)
+                .Skip(this.retainedFileCountLimit.Value - 1)
+                .ToList();
+
+            foreach (var obsolete in toRemove)
+            {
+                var fullPath = Path.Combine(this.logDirectory, obsolete);
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception ex)
+                {
+                    SelfLog.WriteLine("Error {0} while removing obsolete file {1}", ex, fullPath);
+                }
+            }
         }
 
         /// <summary>

@@ -29,6 +29,8 @@ namespace Serilog.Sinks.RollingFileAlternate
         /// <param name="outputTemplate">The template for substituting logged parameters</param>
         /// <param name="formatProvider">A culture specific format provider</param>
         /// <param name="fileSizeLimitBytes">The size files should grow up to (default 2MB)</param>
+        /// <param name="retainedFileCountLimit">The maximum number of log files that will be retained,
+        /// including the current log file. The default is null which is unlimited.</param>
         /// <returns></returns>
         public static LoggerConfiguration RollingFileAlternate(
             this LoggerSinkConfiguration configuration,
@@ -36,7 +38,8 @@ namespace Serilog.Sinks.RollingFileAlternate
             LogEventLevel minimumLevel = LevelAlias.Minimum,
             string outputTemplate = DefaultOutputTemplate,
             IFormatProvider formatProvider = null,
-            long? fileSizeLimitBytes = null)
+            long? fileSizeLimitBytes = null,
+            int? retainedFileCountLimit = null)
         {
             if (configuration == null)
             {
@@ -44,7 +47,7 @@ namespace Serilog.Sinks.RollingFileAlternate
             }
 
             var templateFormatter = new MessageTemplateTextFormatter(outputTemplate, formatProvider);
-            var sink = new AlternateRollingFileSink(logDirectory, templateFormatter, fileSizeLimitBytes ?? TwoMegabytes);
+            var sink = new AlternateRollingFileSink(logDirectory, templateFormatter, fileSizeLimitBytes ?? TwoMegabytes, retainedFileCountLimit);
             return configuration.Sink(sink, minimumLevel);
         }
 
@@ -56,13 +59,16 @@ namespace Serilog.Sinks.RollingFileAlternate
         /// <param name="minimumLevel">Minimum <see cref="LogLevel"/></param>
         /// <param name="outputTemplate">The template for substituting logged parameters</param>
         /// <param name="formatProvider">A culture specific format provider</param>
+        /// <param name="retainedFileCountLimit">The maximum number of log files that will be retained,
+        /// including the current log file. The default is null which is unlimited.</param>
         /// <returns></returns>
         public static LoggerConfiguration HourlyRollingFileAlternate(
             this LoggerSinkConfiguration configuration,
             string logDirectory,
             LogEventLevel minimumLevel = LevelAlias.Minimum,
             string outputTemplate = DefaultOutputTemplate,
-            IFormatProvider formatProvider = null)
+            IFormatProvider formatProvider = null,
+            int? retainedFileCountLimit = null)
         {
             if (configuration == null)
             {
@@ -70,7 +76,7 @@ namespace Serilog.Sinks.RollingFileAlternate
             }
 
             var templateFormatter = new MessageTemplateTextFormatter(outputTemplate, formatProvider);
-            var sink = new HourlyRollingFileSink(logDirectory, templateFormatter);
+            var sink = new HourlyRollingFileSink(logDirectory, templateFormatter, retainedFileCountLimit);
             return configuration.Sink(sink, minimumLevel);
         }
     }

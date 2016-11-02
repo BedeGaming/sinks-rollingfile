@@ -6,18 +6,21 @@ using Serilog.Formatting;
 
 namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 {
+    using Debugging;
     using System.IO;
+    using System.Linq;
 
     /// <summary>
     /// Write log events to a series of files. Each file will be suffixed with a
     /// Date and 5 digit sequence number. No special template in the path specification is
     /// considered.
     /// </summary>
-    public sealed class AlternateRollingFileSink : ILogEventSink, IDisposable
+    public class AlternateRollingFileSink : ILogEventSink, IDisposable
     {
         private static readonly string ThisObjectName = (typeof (SizeLimitedFileSink).Name);
         private readonly ITextFormatter formatter;
         private readonly long fileSizeLimitBytes;
+        private readonly int? retainedFileCountLimit;
         private readonly Encoding encoding;
         private SizeLimitedFileSink currentSink;
         private readonly object syncRoot = new object();
@@ -36,10 +39,12 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             string logDirectory,
             ITextFormatter formatter,
             long fileSizeLimitBytes,
+            int? retainedFileCountLimit = null,
             Encoding encoding = null)
         {
             this.formatter = formatter;
             this.fileSizeLimitBytes = fileSizeLimitBytes;
+            this.retainedFileCountLimit = retainedFileCountLimit;
             this.encoding = encoding;
             this.logDirectory = logDirectory;
             this.currentSink = GetLatestSink();
@@ -96,6 +101,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private SizeLimitedFileSink NextSizeLimitedFileSink()
         {
             SizeLimitedLogFileDescription next = this.currentSink.LogFileDescription.Next();
+            ApplyRetentionPolicy();
             this.currentSink.Dispose();
 
             return new SizeLimitedFileSink(this.formatter, this.logDirectory, next, this.encoding);
@@ -106,6 +112,34 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
+            }
+        }
+
+        private void ApplyRetentionPolicy()
+        {
+            if (retainedFileCountLimit == null) return;
+
+            var newestFirst = Directory.GetFiles(this.logDirectory)
+                .Select(m => new FileInfo(m))
+                .OrderByDescending(m => m.CreationTime)
+                .Select(m => m.Name);
+
+            var toRemove = newestFirst
+                .Where(n => StringComparer.OrdinalIgnoreCase.Compare(this.currentSink.LogFileDescription.FileName, n) != 0)
+                .Skip(this.retainedFileCountLimit.Value - 1)
+                .ToList();
+
+            foreach (var obsolete in toRemove)
+            {
+                var fullPath = Path.Combine(this.logDirectory, obsolete);
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception ex)
+                {
+                    SelfLog.WriteLine("Error {0} while removing obsolete file {1}", ex, fullPath);
+                }
             }
         }
 
