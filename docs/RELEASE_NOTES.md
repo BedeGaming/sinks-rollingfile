@@ -1,4 +1,4 @@
-### 2.0.4 (Released 2016/11/02)
+### 2.0.5 (Released 2016/11/02)
 * Unsealing HourlyRollingFileSink to allow for extension
 
 ### 2.0.3 (Released 2016/07/13)
