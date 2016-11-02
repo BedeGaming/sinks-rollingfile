@@ -24,7 +24,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         {
             var formatter = new RawFormatter();
 
-            return new AlternateRollingFileSink(@"c:\temp", formatter, 100000, Encoding.UTF8);
+            return new AlternateRollingFileSink(@"c:\temp", formatter, 100000, null, Encoding.UTF8);
         }
     }
 }
