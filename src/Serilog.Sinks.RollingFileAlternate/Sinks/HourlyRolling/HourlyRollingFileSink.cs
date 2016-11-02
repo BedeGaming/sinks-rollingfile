@@ -12,7 +12,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
     /// Date and 5 digit sequence number. No special template in the path specification is
     /// considered.
     /// </summary>
-    public sealed class HourlyRollingFileSink : ILogEventSink, IDisposable
+    public class HourlyRollingFileSink : ILogEventSink, IDisposable
     {
         private static readonly string ThisObjectName = (typeof (HourlyFileSink).Name);
         private readonly ITextFormatter formatter;
