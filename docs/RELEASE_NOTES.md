@@ -1,3 +1,8 @@
+### 2.0.7 (Released 2017/01/26)
+* Fixed bug where files weren't rolling over at midnight
+* Fixed bug where hourly sink couldn't log if the file was locked
+* ITextFormatter support added for both sinks
+
 ### 2.0.5 (Released 2016/11/02)
 * Unsealing HourlyRollingFileSink to allow for extension
 

@@ -26,7 +26,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
             this.formatter = formatter;
             this.hourlyLogFileDescription = hourlyLogFileDescription;
 
-            string logDir = Path.Combine(logRootDirectory, hourlyLogFileDescription.Date.ToString("yyyy-MM-dd"));
+            string logDir = Path.Combine(logRootDirectory, DateTime.UtcNow.ToString("yyyy-MM-dd"));
 
             this.output = this.OpenFileForWriting(logDir, hourlyLogFileDescription, encoding ?? Encoding.UTF8);
         }
@@ -76,11 +76,23 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
             Encoding encoding)
         {
             EnsureDirectoryCreated(folderPath);
+            try
+            {
+                var fullPath = Path.Combine(folderPath, logFileDescription.FileName);
+                var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
 
-            var fullPath = Path.Combine(folderPath, logFileDescription.FileName);
-            var stream = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.Read);
+                return new StreamWriter(stream, encoding ?? Encoding.UTF8);
+            }
+            catch (IOException ex)
+            {
+                // Unfortuantely the exception doesn't have a code to check so need to check the message instead
+                if (!ex.Message.StartsWith("The process cannot access the file"))
+                {
+                    throw;
+                }
+            }
 
-            return new StreamWriter(stream, encoding ?? Encoding.UTF8);
+            return OpenFileForWriting(folderPath, logFileDescription.Next(), encoding);
         }
 
         private static void EnsureDirectoryCreated(string path)

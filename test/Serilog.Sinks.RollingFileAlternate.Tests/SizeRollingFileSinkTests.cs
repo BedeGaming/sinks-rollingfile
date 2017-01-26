@@ -17,7 +17,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             {
                 using (var dir = new TestDirectory())
                 {
-                    var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
+                    var latest = SizeLimitedLogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
                     Assert.Equal<uint>(latest.Sequence, 1);
                 }
             }
@@ -31,7 +31,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
                     dir.CreateLogFile(date, 1);
                     dir.CreateLogFile(date, 2);
                     dir.CreateLogFile(date, 3);
-                    var latest = LogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
+                    var latest = SizeLimitedLogFileInfo.GetLatestOrNew(new DateTime(2015, 01, 15), dir.LogDirectory);
                     Assert.Equal<uint>(latest.Sequence, 3);
                 }
             }
@@ -74,7 +74,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
             {
                 lock (_lock)
                 {
-                    string fileName = Path.Combine(this.folder, new LogFileInfo(date, sequence).FileName);
+                    string fileName = Path.Combine(this.folder, new SizeLimitedLogFileInfo(date, sequence).FileName);
                     File.Create(fileName).Dispose(); // touch
                 }
             }

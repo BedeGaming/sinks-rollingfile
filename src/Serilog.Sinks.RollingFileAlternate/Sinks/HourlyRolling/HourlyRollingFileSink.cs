@@ -81,20 +81,33 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
 
         private HourlyFileSink GetLatestSink()
         {
+            EnsureDirectoryCreated(this.logDirectory);
+
+            HourlyLogFileInfo logFileInfo = HourlyLogFileInfo.GetLatestOrNew(DateTime.UtcNow, this.logDirectory);
+
             return new HourlyFileSink(
                 this.formatter,
                 this.logDirectory,
-                new HourlyLogFileDescription(DateTime.UtcNow),
+                new HourlyLogFileDescription(logFileInfo, DateTime.UtcNow),
                 this.encoding);
         }
 
         private HourlyFileSink NextFileSink(DateTime dateTimeUtc)
         {
-            var next = new HourlyLogFileDescription(dateTimeUtc);
+            HourlyLogFileDescription next = this.currentSink.LogFileDescription.Next();
+
             ApplyRetentionPolicy();
             this.currentSink.Dispose();
 
             return new HourlyFileSink(this.formatter, this.logDirectory, next, this.encoding);
+        }
+
+        private static void EnsureDirectoryCreated(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
 
         private void ApplyRetentionPolicy()

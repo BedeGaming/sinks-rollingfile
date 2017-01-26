@@ -17,7 +17,7 @@ var log = new LoggerConfiguration()
     .WriteTo.RollingFileAlternate(".\\logs")
     .CreateLogger();
     
-Log.Information("This will be written to the rolling file set");
+log.Information("This will be written to the rolling file set");
 ```
 
 The sink is configured with the path of a folder for the log file set:
