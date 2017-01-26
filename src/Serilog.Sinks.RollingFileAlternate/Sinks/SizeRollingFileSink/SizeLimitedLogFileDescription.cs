@@ -3,9 +3,9 @@
     internal class SizeLimitedLogFileDescription
     {
         public readonly long SizeLimitBytes;
-        public readonly LogFileInfo LogFileInfo;
+        public readonly SizeLimitedLogFileInfo LogFileInfo;
 
-        public SizeLimitedLogFileDescription(LogFileInfo logFileInfo, long sizeLimitBytes)
+        public SizeLimitedLogFileDescription(SizeLimitedLogFileInfo logFileInfo, long sizeLimitBytes)
         {
             LogFileInfo = logFileInfo;
             SizeLimitBytes = sizeLimitBytes;

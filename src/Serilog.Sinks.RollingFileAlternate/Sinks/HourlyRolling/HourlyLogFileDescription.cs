@@ -4,20 +4,27 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
 {
     internal class HourlyLogFileDescription
     {
-        private readonly DateTime dateTime;
+        public readonly HourlyLogFileInfo LogFileInfo;
 
-        internal HourlyLogFileDescription(DateTime dateTime)
+        internal HourlyLogFileDescription(HourlyLogFileInfo logFileInfo, DateTime dateTime)
         {
-            this.dateTime = dateTime;
+            this.LogFileInfo = logFileInfo;
+            this.DateTime = dateTime;
         }
 
-        internal string FileName { get { return string.Format("{0}.log", this.dateTime.ToString("HH")); } }
+        // internal string FileName { get { return string.Format("{0}.log", this.dateTime.ToString("HH")); } }
+        public string FileName { get { return LogFileInfo.FileName; } }
 
-        internal DateTime Date { get { return this.dateTime.Date; } }
+        public DateTime DateTime { get; private set; }
 
         internal bool SameHour(DateTime logEventAt)
         {
-            return this.dateTime.Date == logEventAt.Date && this.dateTime.Hour == logEventAt.Hour;
+            return this.DateTime.Date == logEventAt.Date && this.DateTime.Hour == logEventAt.Hour;
+        }
+
+        internal HourlyLogFileDescription Next()
+        {
+            return new HourlyLogFileDescription(this.LogFileInfo.Next(), DateTime.UtcNow);
         }
     }
 }

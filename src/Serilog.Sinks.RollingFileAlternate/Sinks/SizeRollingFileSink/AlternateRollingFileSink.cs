@@ -89,7 +89,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         {
             EnsureDirectoryCreated(this.logDirectory);
 
-            LogFileInfo logFileInfo = LogFileInfo.GetLatestOrNew(DateTime.UtcNow, this.logDirectory);
+            SizeLimitedLogFileInfo logFileInfo = SizeLimitedLogFileInfo.GetLatestOrNew(DateTime.UtcNow, this.logDirectory);
 
             return new SizeLimitedFileSink(
                 this.formatter,
