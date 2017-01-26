@@ -5,6 +5,7 @@ using Serilog.Events;
 using Serilog.Formatting.Display;
 using Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling;
 using Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink;
+using Serilog.Formatting;
 
 namespace Serilog.Sinks.RollingFileAlternate
 {
