@@ -102,7 +102,7 @@ In your `appsettings.json` file, under the `Serilog` node, :
     "WriteTo": [{
       "Name": "RollingFileAlternate",
       "Args": {
-        "logFolder": ".\\logs",
+        "logDirectory": ".\\logs",
         "fileSizeLimitBytes": 1048576
       }
     }]
