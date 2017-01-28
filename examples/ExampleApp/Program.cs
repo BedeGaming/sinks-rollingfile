@@ -13,12 +13,18 @@ namespace ExampleApp
                 .WriteTo.ColoredConsole()
                 .CreateLogger();
 
+            var loggerWithPrefix = new LoggerConfiguration().MinimumLevel.Verbose()
+                .WriteTo.RollingFileAlternate(@"C:\logs\serilogtest\", fileSizeLimitBytes: 4096, logFilePrefix:"sample")
+                .WriteTo.ColoredConsole()
+                .CreateLogger();
+
             int messageCount = 0;
             while (true)
             {
                 for (int i = 0; i < 100; i++)
                 {
                     logger.Information("Message: {messageCount}", messageCount);
+                    loggerWithPrefix.Information("Message: {messageCount}", messageCount);
                     messageCount++;
                 }
                 Console.WriteLine("Enter to log 100 logs...");

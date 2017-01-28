@@ -51,7 +51,40 @@ namespace Serilog.Sinks.RollingFileAlternate
             var sink = new AlternateRollingFileSink(logDirectory, templateFormatter, fileSizeLimitBytes ?? TwoMegabytes, retainedFileCountLimit);
             return configuration.Sink(sink, minimumLevel);
         }
-        
+
+        /// <summary>
+        /// Creates an alternative implementation of the rolling file sink
+        /// that rolls files based on their size with an overload to pass log file name prefix
+        /// </summary>
+        /// <param name="configuration"><see cref="LoggerSinkConfiguration"/></param>
+        /// <param name="logDirectory">The names of the directory to be logged</param>
+        /// <param name="logFilePrefix">The prefix for the log file name.</param>
+        /// <param name="minimumLevel">Minimum <see cref="LogLevel"/></param>
+        /// <param name="outputTemplate">The template for substituting logged parameters</param>
+        /// <param name="formatProvider">A culture specific format provider</param>
+        /// <param name="fileSizeLimitBytes">The size files should grow up to (default 2MB)</param>
+        /// <param name="retainedFileCountLimit">The maximum number of log files that will be retained,
+        /// including the current log file. The default is null which is unlimited.</param>
+        /// <returns></returns>
+        public static LoggerConfiguration RollingFileAlternate(
+            this LoggerSinkConfiguration configuration,
+            string logDirectory, string logFilePrefix,
+            LogEventLevel minimumLevel = LevelAlias.Minimum,
+            string outputTemplate = DefaultOutputTemplate,
+            IFormatProvider formatProvider = null,
+            long? fileSizeLimitBytes = null,
+            int? retainedFileCountLimit = null)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException("configuration");
+            }
+
+            var templateFormatter = new MessageTemplateTextFormatter(outputTemplate, formatProvider);
+            var sink = new AlternateRollingFileSink(logDirectory, templateFormatter, fileSizeLimitBytes ?? TwoMegabytes, retainedFileCountLimit, logFilePrefix: logFilePrefix);
+            return configuration.Sink(sink, minimumLevel);
+        }
+
         /// <summary>
         /// Creates an alternative implementation of the rolling file sink with
         /// an overload to pass an ITextFormatter.

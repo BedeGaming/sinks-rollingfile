@@ -26,6 +26,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private readonly object syncRoot = new object();
         private bool disposed;
         private readonly string logDirectory;
+        private readonly string logFilePrefix;
 
         /// <summary>
         /// Construct a <see cref="AlternateRollingFileSink"/>
@@ -35,18 +36,21 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         /// <param name="fileSizeLimitBytes">
         /// The size in bytes at which a new file should be created</param>
         /// <param name="encoding"></param>
+        /// <param name="logFilePrefix">The prefix for the log file name.</param>
         public AlternateRollingFileSink(
             string logDirectory,
             ITextFormatter formatter,
             long fileSizeLimitBytes,
             int? retainedFileCountLimit = null,
-            Encoding encoding = null)
+            Encoding encoding = null,
+            string logFilePrefix = "")
         {
             this.formatter = formatter;
             this.fileSizeLimitBytes = fileSizeLimitBytes;
             this.retainedFileCountLimit = retainedFileCountLimit;
             this.encoding = encoding;
             this.logDirectory = logDirectory;
+            this.logFilePrefix = string.IsNullOrEmpty(logFilePrefix) ? logFilePrefix : $"{logFilePrefix}-";
             this.currentSink = GetLatestSink();
         }
 
@@ -89,12 +93,12 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         {
             EnsureDirectoryCreated(this.logDirectory);
 
-            SizeLimitedLogFileInfo logFileInfo = SizeLimitedLogFileInfo.GetLatestOrNew(DateTime.UtcNow, this.logDirectory);
+            SizeLimitedLogFileInfo logFileInfo = SizeLimitedLogFileInfo.GetLatestOrNew(DateTime.UtcNow, this.logDirectory, this.logFilePrefix);
 
             return new SizeLimitedFileSink(
                 this.formatter,
                 this.logDirectory,
-                new SizeLimitedLogFileDescription(logFileInfo, this.fileSizeLimitBytes),
+                new SizeLimitedLogFileDescription(logFileInfo, this.fileSizeLimitBytes, this.logFilePrefix),
                 this.encoding);
         }
 
