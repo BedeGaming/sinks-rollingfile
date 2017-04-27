@@ -13,7 +13,7 @@ Install-Package Serilog.Sinks.RollingFileAlternate
 To configure the sink in C# code, call `WriteTo.RollingFileAlternate()` during logger configuration:
 
 ```csharp
-var log = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
     .WriteTo.RollingFileAlternate(".\\logs")
     .CreateLogger();
     
