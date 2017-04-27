@@ -17,6 +17,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         private readonly object syncRoot = new object();
         private bool disposed;
         private bool sizeLimitReached;
+        private bool exceptionAlreadyThrown;
 
         public SizeLimitedFileSink(
             ITextFormatter formatter,
@@ -59,6 +60,15 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
                 {
                     throw;
                 }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                if (exceptionAlreadyThrown)
+                {
+                    throw;
+                }
+
+                exceptionAlreadyThrown = true;
             }
 
             return OpenFileForWriting(folderPath, logFileDescription.Next(), encoding);

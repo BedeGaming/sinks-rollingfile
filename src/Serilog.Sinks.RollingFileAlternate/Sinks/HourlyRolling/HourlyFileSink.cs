@@ -16,6 +16,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
         private readonly StreamWriter output;
         private readonly object syncRoot = new object();
         private bool disposed;
+        private bool exceptionAlreadyThrown;
 
         internal HourlyFileSink(
             ITextFormatter formatter,
@@ -90,6 +91,15 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
                 {
                     throw;
                 }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                if (exceptionAlreadyThrown)
+                {
+                    throw;
+                }
+
+                exceptionAlreadyThrown = true;
             }
 
             return OpenFileForWriting(folderPath, logFileDescription.Next(), encoding);
