@@ -14,8 +14,8 @@ namespace Serilog.Sinks.RollingFileAlternate.Tests
         public void ReachedWhenAmountOfCharactersWritten()
         {
             var formatter = new RawFormatter();
-            var components = new SizeLimitedLogFileInfo(new DateTime(2015, 01, 15), 0);
-            var logFile = new SizeLimitedLogFileDescription(components, 1);
+            var components = new SizeLimitedLogFileInfo(new DateTime(2015, 01, 15), 0, string.Empty);
+            var logFile = new SizeLimitedLogFileDescription(components, 1, string.Empty);
             using (var str = new MemoryStream())
             using (var wr = new StreamWriter(str, Encoding.UTF8))
             using (var sink = new SizeLimitedFileSink(formatter, logFile, wr))

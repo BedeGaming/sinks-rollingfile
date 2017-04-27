@@ -11,7 +11,7 @@
     },
     "Serilog": "2.0.0",
     "Serilog.Sinks.ColoredConsole": "2.0.0",
-    "Serilog.Sinks.RollingFileAlternate": "2.0"
+    "Serilog.Sinks.RollingFileAlternate": "2.0.7"
   },
 
   "frameworks": {

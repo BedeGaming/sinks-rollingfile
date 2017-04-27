@@ -13,29 +13,29 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
         internal string FileName { get; private set; }
         internal DateTime Date { get; private set; }
 
-        public SizeLimitedLogFileInfo(DateTime date, uint sequence)
+        public SizeLimitedLogFileInfo(DateTime date, uint sequence, string logFilePrefix)
         {
             this.Date = date;
             this.Sequence = sequence;
-            this.FileName = String.Format("{0}-{1}.log", date.ToString(DateFormat), sequence.ToString(NumberFormat));
+            this.FileName = $"{logFilePrefix}{date.ToString(DateFormat)}-{sequence.ToString(NumberFormat)}.log";
         }
 
-        public SizeLimitedLogFileInfo Next()
+        public SizeLimitedLogFileInfo Next(string logFilePrefix)
         {
             DateTime now = DateTime.UtcNow;
             if (this.Date.Date != now.Date)
             {
-                return new SizeLimitedLogFileInfo(now, 1);
+                return new SizeLimitedLogFileInfo(now, 1, logFilePrefix);
             }
 
-            return new SizeLimitedLogFileInfo(now, this.Sequence + 1);
+            return new SizeLimitedLogFileInfo(now, this.Sequence + 1, logFilePrefix);
         }
 
-        internal static SizeLimitedLogFileInfo GetLatestOrNew(DateTime date, string logDirectory)
+        internal static SizeLimitedLogFileInfo GetLatestOrNew(DateTime date, string logDirectory, string logFilePrefix)
         {
-            string pattern = date.ToString(DateFormat) + @"-(\d{5}).log";
+            string pattern = $"{logFilePrefix}{date.ToString(DateFormat)}" + @"-(\d{5}).log";
 
-            var logFileInfo = new SizeLimitedLogFileInfo(date, 1);
+            var logFileInfo = new SizeLimitedLogFileInfo(date, 1, logFilePrefix);
 
             foreach (var filePath in Directory.GetFiles(logDirectory))
             {
@@ -46,7 +46,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.SizeRollingFileSink
 
                     if (sequence > logFileInfo.Sequence)
                     {
-                        logFileInfo = new SizeLimitedLogFileInfo(date, sequence);
+                        logFileInfo = new SizeLimitedLogFileInfo(date, sequence, logFilePrefix);
                     }
                 }
             }
