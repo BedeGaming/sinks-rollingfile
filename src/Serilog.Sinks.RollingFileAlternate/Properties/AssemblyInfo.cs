@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Serilog.Sinks.Elasticsearch")]
-[assembly: AssemblyDescription("Serilog sink for Elasticsearch")]
+[assembly: AssemblyTitle("Serilog.Sinks.RollingFileAlternate")]
+[assembly: AssemblyDescription("Serilog sink for RollingFileAlternate")]
 [assembly: AssemblyCopyright("Copyright © Serilog Contributors 2014")]
 
 [assembly: InternalsVisibleTo("Serilog.Sinks.RollingFileAlternate.Tests, PublicKey = 0024000004800000940000000602000000240000525341310004000001000100fb8d13fd344a1c" +
