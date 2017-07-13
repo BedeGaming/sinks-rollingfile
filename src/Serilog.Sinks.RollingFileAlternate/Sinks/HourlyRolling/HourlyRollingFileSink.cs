@@ -16,7 +16,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
     /// </summary>
     public class HourlyRollingFileSink : ILogEventSink, IDisposable
     {
-        private static readonly string ThisObjectName = (typeof (HourlyFileSink).Name);
+        private static readonly string ThisObjectName = (typeof(HourlyFileSink).Name);
         private readonly ITextFormatter formatter;
         private readonly int? retainedFileCountLimit;
         private readonly Encoding encoding;
@@ -24,6 +24,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
         private readonly object syncRoot = new object();
         private bool disposed;
         private readonly string logDirectory;
+        private readonly FileRetentionPolicy fileRetentionPolicy;
 
         /// <summary>
         /// Construct a <see cref="HourlyRollingFileSink"/>
@@ -44,6 +45,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
             this.encoding = encoding;
             this.logDirectory = logDirectory;
             this.currentSink = this.GetLatestSink();
+            this.fileRetentionPolicy = new FileRetentionPolicy(logDirectory, retainedFileCountLimit);
         }
 
         /// <summary>
@@ -96,7 +98,7 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
         {
             HourlyLogFileDescription next = this.currentSink.LogFileDescription.Next();
 
-            ApplyRetentionPolicy();
+            this.fileRetentionPolicy.Apply(this.currentSink.LogFileDescription.FileName);
             this.currentSink.Dispose();
 
             return new HourlyFileSink(this.formatter, this.logDirectory, next, this.encoding);
@@ -107,34 +109,6 @@ namespace Serilog.Sinks.RollingFileAlternate.Sinks.HourlyRolling
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
-            }
-        }
-
-        private void ApplyRetentionPolicy()
-        {
-            if (retainedFileCountLimit == null) return;
-
-            var newestFirst = Directory.GetFiles(this.logDirectory)
-                .Select(m => new FileInfo(m))
-                .OrderByDescending(m => m.CreationTime)
-                .Select(m => m.Name);
-
-            var toRemove = newestFirst
-                .Where(n => StringComparer.OrdinalIgnoreCase.Compare(this.currentSink.LogFileDescription.FileName, n) != 0)
-                .Skip(this.retainedFileCountLimit.Value - 1)
-                .ToList();
-
-            foreach (var obsolete in toRemove)
-            {
-                var fullPath = Path.Combine(this.logDirectory, obsolete);
-                try
-                {
-                    File.Delete(fullPath);
-                }
-                catch (Exception ex)
-                {
-                    SelfLog.WriteLine("Error {0} while removing obsolete file {1}", ex, fullPath);
-                }
             }
         }
 
