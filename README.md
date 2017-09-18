@@ -62,7 +62,7 @@ In your application's `App.config` or `Web.config` file, specify the rolling fil
 <configuration>
   <appSettings>
     <add key="serilog:using:RollingFileAlternate" value="Serilog.Sinks.RollingFileAlternate" />
-    <add key="serilog:write-to:RollingFileAlternate.logsDirectory" value=".\logs" />
+    <add key="serilog:write-to:RollingFileAlternate.logDirectory" value=".\logs" />
     <add key="serilog:write-to:RollingFileAlternate.fileSizeLimitBytes" value="1048576" />
 ```
 
@@ -71,7 +71,7 @@ The parameters that can be set through the `serilog:write-to:RollingFileAlternat
 In XML and JSON configuration formats, environment variables can be used in setting values. This means, for instance, that the log folder path can be based on `TMP` or `APPDATA`:
 
 ```xml
-    <add key="serilog:write-to:RollingFileALternate.logsFolder" value="%APPDATA%\MyApp\logs" />
+    <add key="serilog:write-to:RollingFileALternate.logDirectory" value="%APPDATA%\MyApp\logs" />
 ```
 
 ### JSON `appsettings.json` configuration
