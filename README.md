@@ -62,7 +62,7 @@ In your application's `App.config` or `Web.config` file, specify the rolling fil
 <configuration>
   <appSettings>
     <add key="serilog:using:RollingFileAlternate" value="Serilog.Sinks.RollingFileAlternate" />
-    <add key="serilog:write-to:RollingFileAlternate.logsDirectory" value=".\logs" />
+    <add key="serilog:write-to:RollingFileAlternate.logDirectory" value=".\logs" />
     <add key="serilog:write-to:RollingFileAlternate.fileSizeLimitBytes" value="1048576" />
 ```
 
